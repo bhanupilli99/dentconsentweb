@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DentConsent | Digital Consent for Modern Dental Clinics</title>
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="css/global.css">
+
+    <style>
+        /* Landing Page Specific Styles */
+        body {
+            background-color: var(--bg-primary);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: rgba(248, 245, 240, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--brand-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--brand-primary);
+        }
+
+        .mobile-menu-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 160px 2rem 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            min-height: 90vh;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            line-height: 1.1;
+            letter-spacing: -1.5px;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+            max-width: 500px;
+        }
+
+        .hero-visual {
+            position: relative;
+            height: 500px;
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--surface-card) 100%);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .floating-card {
+            position: absolute;
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-l2);
+            border: 1px solid var(--border-subtle);
+            z-index: 2;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .fc-1 {
+            top: 40px;
+            right: -30px;
+        }
+
+        .fc-2 {
+            bottom: 40px;
+            left: -30px;
+            animation-delay: -3s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        /* Sections */
+        .section-padding {
+            padding: 120px 2rem;
+        }
+
+        .bg-white {
+            background: white;
+            border-top: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .bg-navy {
+            background: var(--brand-primary);
+            color: white;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .section-header h2 {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+        }
+
+        .bg-navy .section-header p {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Problem/Solution */
+        .comparison-box {
+            padding: 2.5rem;
+            border-radius: 24px;
+        }
+
+        .problem-box {
+            background: rgba(255, 69, 58, 0.05);
+            border: 1px solid rgba(255, 69, 58, 0.1);
+        }
+
+        .solution-box {
+            background: rgba(48, 181, 90, 0.05);
+            border: 1px solid rgba(48, 181, 90, 0.1);
+        }
+
+        .list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .list-item-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .problem-box .list-item-icon {
+            background: rgba(255, 69, 58, 0.1);
+            color: var(--error);
+        }
+
+        .solution-box .list-item-icon {
+            background: rgba(48, 181, 90, 0.1);
+            color: var(--success);
+        }
+
+        /* Step Card */
+        .step-card {
+            position: relative;
+            padding: 2.5rem;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-l);
+            background: var(--surface-card);
+            box-shadow: var(--shadow-l1);
+        }
+
+        .step-number {
+            font-family: var(--font-display);
+            font-size: 4rem;
+            font-weight: 700;
+            color: rgba(26, 82, 118, 0.06);
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+        }
+
+        /* Feature Cards */
+        .feature-card {
+            padding: 2.5rem;
+            border-radius: var(--radius-l);
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            transition: transform 0.4s var(--spring-ease), box-shadow 0.4s var(--smooth-ease);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-l2);
+        }
+
+        .icon-circle {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: rgba(26, 82, 118, 0.08);
+            color: var(--brand-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Chat Demo */
+        .chat-container {
+            background: white;
+            border-radius: 24px;
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
+            box-shadow: var(--shadow-l2);
+        }
+
+        .chat-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+            background: var(--bg-secondary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .chat-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            height: 380px;
+            overflow-y: auto;
+            background: var(--bg-primary);
+        }
+
+        .chat-bubble {
+            max-width: 85%;
+            padding: 1rem 1.25rem;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .bubble-user {
+            background: var(--brand-primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .bubble-ai {
+            background: white;
+            color: var(--text-primary);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        /* Security Features */
+        .security-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .security-item {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .security-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* Testimonial Cards */
+        .testimonial-card {
+            padding: 2.5rem;
+            border-radius: var(--radius-l);
+            background: white;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-l1);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-primary);
+            padding: 80px 2rem 40px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        .footer-col h4 {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .footer-link {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .footer-link:hover {
+            color: var(--brand-primary);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+        }
+
+        /* Enhanced Login Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s var(--smooth-ease);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-container {
+            width: 100%;
+            max-width: 460px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-l4);
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.4s var(--spring-ease);
+            padding: 3.5rem 2.5rem;
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(0, 0, 0, 0.05);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .role-selector {
+            display: flex;
+            background: var(--bg-secondary);
+            padding: 4px;
+            border-radius: var(--radius-full);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .role-pill {
+            flex: 1;
+            padding: 10px 0;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            z-index: 2;
+            transition: color 0.3s var(--smooth-ease);
+            text-align: center;
+        }
+
+        .role-pill.active {
+            color: white;
+        }
+
+        .role-indicator {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: calc(50% - 4px);
+            height: calc(100% - 8px);
+            background: var(--brand-primary);
+            border-radius: var(--radius-full);
+            z-index: 1;
+            transition: transform 0.4s var(--spring-ease);
+            box-shadow: 0 4px 12px rgba(26, 82, 118, 0.2);
+        }
+
+        .role-selector[data-role="patient"] .role-indicator {
+            transform: translateX(100%);
+        }
+
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .btn-loading .btn-text {
+            opacity: 0;
+        }
+
+        .btn-loading .spinner {
+            display: block;
+            position: absolute;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .navbar {
+                height: 76px;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .hero-section {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding-top: 120px;
+                padding-bottom: 40px;
+                gap: 2rem;
+            }
+
+            .hero-content h1 {
+                font-size: 3rem;
+            }
+
+            .hero-content p {
+                margin: 0 auto 2.5rem;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+            }
+
+            .mobile-menu-overlay {
+                top: 84px;
+                left: 0;
+                right: 0;
+                bottom: auto;
+                background: transparent;
+                align-items: flex-start;
+                justify-content: flex-end;
+                transform: translateY(-12px);
+            }
+
+            .mobile-menu-overlay.active {
+                transform: translateY(0);
+            }
+
+            .mobile-menu-content {
+                width: min(320px, calc(100vw - 2rem));
+                max-width: 320px;
+                margin-right: 1rem;
+                padding: 1rem;
+                gap: 0.75rem;
+                text-align: left;
+                background: rgba(248, 245, 240, 0.98);
+                border: 1px solid var(--border-subtle);
+                border-radius: 24px;
+                box-shadow: var(--shadow-l3);
+            }
+
+            .mobile-nav-link {
+                display: block;
+                padding: 0.95rem 1rem;
+                border-radius: 16px;
+                background: rgba(255, 255, 255, 0.84);
+                border: 1px solid rgba(26, 82, 118, 0.08);
+                font-size: 1rem;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+            }
+
+            .hero-visual {
+                height: 400px;
+            }
+
+            .hero-visual > div {
+                width: 90% !important;
+            }
+
+            .fc-1 { right: -10px; top: 20px; }
+            .fc-2 { left: -10px; bottom: 20px; }
+        }
+
+        @media (max-width: 768px) {
+            .section-padding {
+                padding: 60px 1.5rem;
+            }
+
+            .mobile-menu-overlay {
+                justify-content: center;
+            }
+
+            .mobile-menu-content {
+                width: calc(100vw - 1.5rem);
+                max-width: none;
+                margin-right: 0;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.78);
+            border: 1px solid rgba(26, 82, 118, 0.12);
+            border-radius: 999px;
+            cursor: pointer;
+            color: var(--brand-primary);
+            padding: 0.65rem 0.9rem;
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-height: 44px;
+            box-shadow: 0 10px 24px rgba(26, 82, 118, 0.08);
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: transparent;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s var(--smooth-ease), visibility 0.3s var(--smooth-ease), transform 0.3s var(--smooth-ease);
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+        }
+
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-menu-content {
+            width: min(320px, calc(100vw - 2rem));
+            max-width: 320px;
+            margin: 84px 1rem 0 0;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            text-align: left;
+            background: rgba(248, 245, 240, 0.98);
+            border: 1px solid var(--border-subtle);
+            border-radius: 24px;
+            box-shadow: var(--shadow-l3);
+        }
+
+        .mobile-nav-link {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--brand-primary);
+            text-decoration: none;
+            display: block;
+            padding: 0.95rem 1rem;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.84);
+            border: 1px solid rgba(26, 82, 118, 0.08);
+        }
+
+        @media (max-width: 992px) {
+            .mobile-menu-toggle {
+                display: inline-flex;
+            }
+        }
+
+        /* Fix for overlaying cards on mobile */
+        .comparison-box {
+            padding: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-brand">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path
+                        d="M12 2C9.5 2 7.5 4 7 6.5C6.5 9 6 12 7 14C8 16 10 22 12 22C14 22 16 16 17 14C18 12 17.5 9 17 6.5C16.5 4 14.5 2 12 2Z" />
+                    <path d="M10 8C10 8 11 7 12 7C13 7 14 8 14 8" stroke="var(--brand-accent)" />
+                </svg>
+                DentConsent
+            </a>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#security" class="nav-link">Security</a>
+                <a href="#testimonials" class="nav-link">Testimonials</a>
+                <button class="btn btn-outline" onclick="openLoginModal()" style="padding: 0.5rem 1.25rem;">Sign In</button>
+                <button class="btn btn-primary" onclick="openLoginModal()" style="padding: 0.5rem 1.25rem;">Get Started</button>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" id="menuToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobileMenu">
+                <span>Menu</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12" id="line1"></line>
+                    <line x1="3" y1="6" x2="21" y2="6" id="line2"></line>
+                    <line x1="3" y1="18" x2="21" y2="18" id="line3"></line>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenu">
+        <div class="mobile-menu-content">
+            <a href="#features" class="mobile-nav-link">Features</a>
+            <a href="#security" class="mobile-nav-link">Security</a>
+            <a href="#testimonials" class="mobile-nav-link">Testimonials</a>
+            <div class="mobile-menu-actions">
+                <button class="btn btn-outline" onclick="openLoginModal()" style="width: 100%;">Sign In</button>
+                <button class="btn btn-primary" onclick="openLoginModal()" style="width: 100%;">Get Started</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content animate-in">
+            <h1 class="display-xl">Digital Consent for Modern Dental Clinics</h1>
+            <p class="body-l">Replace paper consent forms with secure digital workflows. Educate patients, explain
+                treatments with AI, and capture legally valid signatures.</p>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                <button class="btn btn-primary" onclick="openLoginModal()">Get Started</button>
+                <a href="#how-it-works" class="btn btn-ghost" style="text-decoration: none;">See How It Works ↓</a>
+            </div>
+        </div>
+        <div class="hero-visual animate-in stagger-2">
+            <!-- Simulated App UI in hero instead of static image to show functionality -->
+            <div
+                style="width: 80%; background: white; border-radius: 12px; box-shadow: var(--shadow-l2); overflow: hidden; font-family: var(--font-body);">
+                <div
+                    style="background: var(--bg-secondary); padding: 12px 16px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 12px; height: 12px; border-radius: 50%; background: #ff5f56;"></div>
+                    <div style="width: 12px; height: 12px; border-radius: 50%; background: #ffbd2e;"></div>
+                    <div style="width: 12px; height: 12px; border-radius: 50%; background: #27c93f;"></div>
+                    <span
+                        style="font-size: 12px; color: var(--text-tertiary); margin-left: 10px; font-weight: 500;">DentConsent
+                        Dashboard</span>
+                </div>
+                <div style="padding: 24px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <div>
+                            <div style="font-size: 18px; font-weight: 700;">Patient</div>
+                            <div style="font-size: 13px; color: var(--text-secondary);">Anika Sharma</div>
+                        </div>
+                        <div
+                            style="width: 40px; height: 40px; border-radius: 50%; background: var(--brand-primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                            AS</div>
+                    </div>
+                    <div
+                        style="background: var(--bg-primary); padding: 16px; border-radius: 8px; border: 1px solid var(--border-subtle);">
+                        <div style="font-size: 14px; font-weight: 600; margin-bottom: 4px;">Consent Form</div>
+                        <div
+                            style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary);">
+                            <span>Root Canal — #14</span>
+                            <span style="color: var(--brand-primary); font-weight: 600;">Active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Floating decorations -->
+            <div class="floating-card fc-1">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div
+                        style="width: 32px; height: 32px; border-radius: 50%; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center;">
+                        ✍️</div>
+                    <div style="font-size: 13px; font-weight: 600; color: var(--text-primary);">Signature<br><span
+                            style="color: var(--brand-primary);">Sign here</span></div>
+                </div>
+            </div>
+            <div class="floating-card fc-2">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div
+                        style="width: 32px; height: 32px; border-radius: 50%; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center;">
+                        ✨</div>
+                    <div style="font-size: 13px; font-weight: 600; color: var(--text-primary);">AI Assistant<br><span
+                            style="color: var(--success);">Ready</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem / Solution Section -->
+    <section class="section-padding bg-white">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Clinics Are Moving Away from Paper Consent</h2>
+                <p>Traditional consent forms create friction, legal risk, and a poor patient experience.</p>
+            </div>
+            <div class="grid-2">
+                <div class="comparison-box problem-box">
+                    <h3 class="title-l" style="margin-bottom: 2rem; color: var(--text-primary);">The Problem</h3>
+                    <div class="list-item">
+                        <div class="list-item-icon">✕</div>
+                        <div><strong style="color: var(--text-primary);">Paper forms get lost</strong><br><span
+                                class="text-secondary text-sm">Physical documents are easily misplaced or
+                                damaged.</span></div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-icon">✕</div>
+                        <div><strong style="color: var(--text-primary);">Patients don't understand</strong><br><span
+                                class="text-secondary text-sm">Medical jargon leads to uninformed signatures.</span>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-icon">✕</div>
+                        <div><strong style="color: var(--text-primary);">Manual work wastes time</strong><br><span
+                                class="text-secondary text-sm">Staff spend hours scanning and filing paperwork.</span>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-icon">✕</div>
+                        <div><strong style="color: var(--text-primary);">Legal risks</strong><br><span
+                                class="text-secondary text-sm">Unclear consent or missing dates can lead to
+                                liabilities.</span></div>
+                    </div>
+                </div>
+                <div class="comparison-box solution-box">
+                    <h3 class="title-l" style="margin-bottom: 2rem; color: var(--text-primary);">The Solution</h3>
+                    <div class="list-item">
+                        <div class="list-item-icon">✓</div>
+                        <div><strong style="color: var(--text-primary);">Digital workflow</strong><br><span
+                                class="text-secondary text-sm">Seamless tablet-based signing experience.</span></div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-icon">✓</div>
+                        <div><strong style="color: var(--text-primary);">AI explanations</strong><br><span
+                                class="text-secondary text-sm">Patients understand exactly what they are signing.</span>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-icon">✓</div>
+                        <div><strong style="color: var(--text-primary);">Instant storage</strong><br><span
+                                class="text-secondary text-sm">Auto-generated PDFs saved directly to records.</span>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-icon">✓</div>
+                        <div><strong style="color: var(--text-primary);">Legally binding</strong><br><span
+                                class="text-secondary text-sm">Time-stamped, verified electronic signatures.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section id="how-it-works" class="section-padding">
+        <div class="container">
+            <div class="section-header">
+                <h2>How DentConsent Works</h2>
+                <p>A streamlined workflow designed specifically for dental practices.</p>
+            </div>
+            <div class="grid-4">
+                <div class="step-card">
+                    <div class="step-number">01</div>
+                    <h3 class="title-m" style="margin-bottom: 0.5rem; position: relative; z-index: 2;">Add Patient</h3>
+                    <p class="body-m text-muted" style="position: relative; z-index: 2;">Dentist creates patient profile
+                        with basic details and assigns a pathway.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">02</div>
+                    <h3 class="title-m" style="margin-bottom: 0.5rem; position: relative; z-index: 2;">Select Treatment
+                    </h3>
+                    <p class="body-m text-muted" style="position: relative; z-index: 2;">Choose treatment procedure,
+                        auto-populating specific risks and alternatives.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">03</div>
+                    <h3 class="title-m" style="margin-bottom: 0.5rem; position: relative; z-index: 2;">AI Explains</h3>
+                    <p class="body-m text-muted" style="position: relative; z-index: 2;">Patients watch orientation
+                        media and can ask AI questions about the treatment.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">04</div>
+                    <h3 class="title-m" style="margin-bottom: 0.5rem; position: relative; z-index: 2;">Digital Consent
+                    </h3>
+                    <p class="body-m text-muted" style="position: relative; z-index: 2;">Patient reviews the checklist,
+                        signs digitally, and the PDF is stored securely.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="section-padding bg-white">
+        <div class="container">
+            <div class="section-header">
+                <h2>Everything You Need</h2>
+                <p>A complete consent management platform designed for modern dental practices.</p>
+            </div>
+            <div class="grid-3">
+                <div class="feature-card">
+                    <div class="icon-circle">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="title-m" style="margin-bottom: 0.5rem;">Digital Consent Forms</h3>
+                    <p class="body-m text-muted">Create and manage consent forms digitally with specialty-specific,
+                        pre-approved templates.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-circle">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 16v-4"></path>
+                            <path d="M12 8h.01"></path>
+                        </svg>
+                    </div>
+                    <h3 class="title-m" style="margin-bottom: 0.5rem;">AI Dental Assistant</h3>
+                    <p class="body-m text-muted">Let patients ask questions and easily understand complex procedures
+                        before committing to sign.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-circle">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                        </svg>
+                    </div>
+                    <h3 class="title-m" style="margin-bottom: 0.5rem;">Treatment Education</h3>
+                    <p class="body-m text-muted">A clinical health library with visual treatment modules that explain
+                        procedures in plain language.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-circle">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <h3 class="title-m" style="margin-bottom: 0.5rem;">Patient Records</h3>
+                    <p class="body-m text-muted">Organized patient profiles linked to a complete, searchable consent and
+                        compliance history.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-circle">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="title-m" style="margin-bottom: 0.5rem;">Secure Cloud Storage</h3>
+                    <p class="body-m text-muted">All records are encrypted and stored in the cloud with medical-grade
+                        infrastructure and privacy.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-circle">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </div>
+                    <h3 class="title-m" style="margin-bottom: 0.5rem;">Instant PDF Generation</h3>
+                    <p class="body-m text-muted">Generate signed consent PDFs instantly. Patients can download them
+                        directly from their dashboard.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Demo Section -->
+    <section class="section-padding">
+        <div class="container grid-2">
+            <div>
+                <span class="label-l" style="color: var(--brand-primary); margin-bottom: 1rem; display: block;">Patient
+                    Experience</span>
+                <h2 class="display-l" style="margin-bottom: 1.5rem;">AI That Explains Dental Procedures</h2>
+                <p class="body-l text-secondary" style="margin-bottom: 2.5rem; max-width: 480px;">Patients can ask
+                    questions about treatments before signing consent. Our clinical AI assistant provides clear,
+                    accurate explanations in plain language, reducing anxiety and building trust.</p>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <div
+                        style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                        🦷</div>
+                    <span class="body-m font-bold">Powered by specialized dental knowledge base</span>
+                </div>
+            </div>
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--success);"></div>
+                    <span style="color: var(--text-primary);">Clinical AI Assistant</span>
+                </div>
+                <div class="chat-body">
+                    <div class="chat-bubble bubble-user">Is a root canal painful?</div>
+                    <div class="chat-bubble bubble-ai">Modern root canals use local anesthesia, so you'll feel minimal
+                        discomfort. Most patients compare it to getting a completely standard filling.</div>
+                    <div class="chat-bubble bubble-user">How long does the procedure typically take?</div>
+                    <div class="chat-bubble bubble-ai">A typical root canal takes about 60–90 minutes. Complex cases may
+                        require a second brief visit to ensure everything is perfect.</div>
+                    <div class="chat-bubble bubble-user">What are the risks?</div>
+                    <div class="chat-bubble bubble-ai">Risks are minimal but can include minor infection, incomplete
+                        cleaning, or a rare tooth fracture. Your dentist will discuss these with you before proceeding.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security Section -->
+    <section id="security" class="section-padding bg-navy">
+        <div class="container grid-2">
+            <div style="order: 2;">
+                <h2 class="display-l" style="margin-bottom: 1.5rem;">Built for Medical Security</h2>
+                <p class="body-l" style="margin-bottom: 3rem; color: rgba(255,255,255,0.8); max-width: 480px;">Your
+                    patients' data deserves the highest level of protection. DentConsent is built with enterprise-grade
+                    security from the ground up.</p>
+
+                <div class="security-list">
+                    <div class="security-item">
+                        <div class="security-icon"><svg width="22" height="22" fill="none" stroke="currentColor"
+                                stroke-width="2" viewBox="0 0 24 24">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg></div>
+                        <div>
+                            <h4 class="title-m" style="margin-bottom: 0.25rem;">Encrypted Patient Data</h4>
+                            <p class="body-m" style="color: rgba(255,255,255,0.7);">AES-256 encryption at rest and TLS
+                                in transit across all endpoints.</p>
+                        </div>
+                    </div>
+                    <div class="security-item">
+                        <div class="security-icon"><svg width="22" height="22" fill="none" stroke="currentColor"
+                                stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg></div>
+                        <div>
+                            <h4 class="title-m" style="margin-bottom: 0.25rem;">Secure Digital Signatures</h4>
+                            <p class="body-m" style="color: rgba(255,255,255,0.7);">Legally binding cryptographic
+                                e-signatures with complete audit trails.</p>
+                        </div>
+                    </div>
+                    <div class="security-item">
+                        <div class="security-icon"><svg width="22" height="22" fill="none" stroke="currentColor"
+                                stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg></div>
+                        <div>
+                            <h4 class="title-m" style="margin-bottom: 0.25rem;">HIPAA-Style Privacy</h4>
+                            <p class="body-m" style="color: rgba(255,255,255,0.7);">Platform architecture designed
+                                meticulously around strict healthcare privacy standards.</p>
+                        </div>
+                    </div>
+                    <div class="security-item">
+                        <div class="security-icon"><svg width="22" height="22" fill="none" stroke="currentColor"
+                                stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg></div>
+                        <div>
+                            <h4 class="title-m" style="margin-bottom: 0.25rem;">Clinic-Level Access Control</h4>
+                            <p class="body-m" style="color: rgba(255,255,255,0.7);">Granular role-based permissions for
+                                staff, doctors, and administrators.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="order: 1; position: relative;">
+                <!-- Decorative representation of a secure profile -->
+                <div
+                    style="background: white; border-radius: 16px; padding: 2rem; color: var(--text-primary); box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+                        <h4 class="title-l">Patient Profile Record</h4>
+                        <span class="label-m"
+                            style="color: var(--success); display: flex; align-items: center; gap: 0.5rem;"><svg
+                                width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg> SECURE</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                        <div>
+                            <div class="caption">Name</div>
+                            <div class="body-m font-bold">Anika Sharma</div>
+                        </div>
+                        <div>
+                            <div class="caption">Date of Birth</div>
+                            <div class="body-m font-bold">12/03/1990</div>
+                        </div>
+                        <div>
+                            <div class="caption">Phone</div>
+                            <div class="body-m font-bold">+91 98765 43210</div>
+                        </div>
+                    </div>
+
+                    <div
+                        style="background: var(--bg-primary); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                        <div class="caption" style="margin-bottom: 0.5rem;">Consent Form Details</div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span class="body-m">Treatment</span>
+                            <span class="body-m font-bold">Root Canal — #14</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span class="body-m">Risks</span>
+                            <span class="body-m text-secondary">Infection, fracture</span>
+                        </div>
+                    </div>
+
+                    <div
+                        style="border: 1px solid var(--success); background: rgba(48,181,90,0.05); padding: 1.5rem; border-radius: 12px;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span class="caption" style="color: var(--success);">Signed Record</span>
+                            <span class="body-m font-bold" style="color: var(--success);">✓ Legally valid</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span class="body-m">Signed by: <strong style="color: var(--text-primary);">Anika
+                                    Sharma</strong></span>
+                            <span class="body-m text-secondary">10 Mar 2026</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="section-padding">
+        <div class="container">
+            <div class="section-header">
+                <h2>Trusted by Dental Professionals</h2>
+                <p>See why clinics are switching to DentConsent to manage their patient workflows.</p>
+            </div>
+            <div class="grid-3">
+                <div class="testimonial-card">
+                    <div style="color: #F1C40F; font-size: 1.25rem; margin-bottom: 1rem;">★★★★★</div>
+                    <p class="body-m" style="font-style: italic; margin-bottom: 2rem;">"DentConsent simplified our
+                        entire consent workflow. We went entirely paperless in just a week. Highly recommended."</p>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <div
+                            style="width: 48px; height: 48px; border-radius: 50%; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--brand-primary);">
+                            DS</div>
+                        <div>
+                            <div class="title-m">Dr. Sharma</div>
+                            <div class="caption text-muted">Endodontist, SmileCare Clinic</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div style="color: #F1C40F; font-size: 1.25rem; margin-bottom: 1rem;">★★★★★</div>
+                    <p class="body-m" style="font-style: italic; margin-bottom: 2rem;">"Patients now genuinely
+                        understand treatments before signing anything. The AI feature builds immense real trust."</p>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <div
+                            style="width: 48px; height: 48px; border-radius: 50%; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--brand-primary);">
+                            DM</div>
+                        <div>
+                            <div class="title-m">Dr. Mehta</div>
+                            <div class="caption text-muted">Prosthodontist, DentalFirst</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div style="color: #F1C40F; font-size: 1.25rem; margin-bottom: 1rem;">★★★★★</div>
+                    <p class="body-m" style="font-style: italic; margin-bottom: 2rem;">"No more paper forms in our
+                        clinic whatsoever. Everything is instantly searchable, compliant, and deeply secure."</p>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <div
+                            style="width: 48px; height: 48px; border-radius: 50%; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--brand-primary);">
+                            DP</div>
+                        <div>
+                            <div class="title-m">Dr. Patel</div>
+                            <div class="caption text-muted">Oral Surgeon, OralHealth Center</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section-padding bg-white" style="text-align: center;">
+        <div class="container">
+            <h2 class="display-l" style="margin-bottom: 1rem;">Start Using DentConsent Today</h2>
+            <p class="body-l text-secondary"
+                style="margin-bottom: 2.5rem; max-width: 600px; margin-left: auto; margin-right: auto;">Digitize your
+                clinic's consent workflow in minutes. No setup fees, no long contracts. Experience the difference.</p>
+            <button class="btn btn-primary" onclick="openLoginModal()"
+                style="padding: 1rem 2.5rem; font-size: 1.1rem;">Get Started Now</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-col" style="padding-right: 2rem;">
+                <div class="nav-brand" style="margin-bottom: 1rem;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M12 2C9.5 2 7.5 4 7 6.5C6.5 9 6 12 7 14C8 16 10 22 12 22C14 22 16 16 17 14C18 12 17.5 9 17 6.5C16.5 4 14.5 2 12 2Z" />
+                    </svg>
+                    DentConsent
+                </div>
+                <p class="body-m text-muted">Digital consent and comprehensive patient education for modern,
+                    forward-thinking dental clinics.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Product</h4>
+                <a href="#features" class="footer-link">Features</a>
+                <a href="#security" class="footer-link">Security</a>
+                <a href="#" class="footer-link">Pricing</a>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <a href="#" class="footer-link">About Us</a>
+                <a href="#" class="footer-link">Contact</a>
+                <a href="#" class="footer-link">Careers</a>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <a href="#" class="footer-link">Documentation</a>
+                <a href="#" class="footer-link">Privacy Policy</a>
+                <a href="#" class="footer-link">Terms of Service</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>© 2026 DentConsent. All rights reserved.</div>
+            <div style="display: flex; gap: 1.5rem;">
+                <a href="#" style="color: var(--text-tertiary);"><svg width="20" height="20" fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <path
+                            d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                    </svg></a>
+                <a href="#" style="color: var(--text-tertiary);"><svg width="20" height="20" fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <path
+                            d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                    </svg></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login/Signup Modal -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-container">
+            <button class="modal-close" onclick="closeLoginModal()">✕</button>
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                    style="color: var(--brand-primary); margin-bottom: 1rem;">
+                    <path
+                        d="M12 2C9.5 2 7.5 4 7 6.5C6.5 9 6 12 7 14C8 16 10 22 12 22C14 22 16 16 17 14C18 12 17.5 9 17 6.5C16.5 4 14.5 2 12 2Z"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M10 8C10 8 11 7 12 7C13 7 14 8 14 8" stroke="var(--brand-accent)" stroke-linecap="round" />
+                </svg>
+                <h2 class="headline-m" style="margin-bottom: 0.25rem;">Access Portal</h2>
+                <p class="body-m text-muted">Sign in to your DentConsent account.</p>
+            </div>
+
+            <div class="role-selector" id="roleSelector" data-role="doctor">
+                <div class="role-indicator"></div>
+                <div class="role-pill active" onclick="setRole('doctor')">Doctor</div>
+                <div class="role-pill" onclick="setRole('patient')">Patient</div>
+            </div>
+
+            <div id="error-alert" class="alert alert-danger"
+                style="display: none; margin-bottom: 1.5rem; border-radius: var(--radius-xs); padding: 0.75rem; background: rgba(255, 69, 58, 0.1); color: var(--error); font-size: 0.9rem; text-align: center;">
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input type="email" id="email" class="form-control" placeholder="doctor@test.coo" required>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 2rem;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <label class="form-label" style="margin-bottom: 0;">Password</label>
+                        <a href="#" class="label-m"
+                            style="color: var(--brand-secondary); text-decoration: underline; text-transform: none;">Forgot
+                            password?</a>
+                    </div>
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="loginBtn" style="width: 100%;">
+                    <span class="btn-text">Sign In</span>
+                    <div class="spinner"></div>
+                </button>
+            </form>
+
+            <div style="text-align: center; margin-top: 2rem; font-size: 0.9rem; color: var(--text-tertiary);">
+                <span id="patientRegLink" style="display: none;">New patient? <a href="register.html?role=patient"
+                        style="color: var(--brand-primary); font-weight: 600; text-decoration: none;">Create account
+                        with
+                        clinic</a></span>
+                <span id="doctorRegLink">Doctor? <a href="register.html?role=doctor"
+                        style="color: var(--brand-primary); font-weight: 600; text-decoration: none;">Register your
+                        clinic</a></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core App Logic -->
+    <script src="js/auth.js?v=1.2"></script>
+    <script>
+        // Modal logic
+        const emailInput = document.getElementById('email');
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+
+        function openLoginModal() {
+            closeMenu();
+            document.getElementById('loginModal').classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on click outside
+        document.getElementById('loginModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeLoginModal();
+            }
+        });
+
+        // Clear any potentially corrupted localStorage data on page load
+        try {
+            const userData = localStorage.getItem('dentconsent_user');
+            if (userData === 'undefined' || userData === 'null' || !userData || userData.trim() === '') {
+                localStorage.removeItem('dentconsent_user');
+            }
+        } catch (e) {
+            console.log('Error checking localStorage:', e);
+        }
+
+        // Check if already logged in - if so, quietly redirect to avoid showing landing page unnecessarily
+        Auth.redirectIfLoggedIn();
+
+        let currentRole = 'doctor';
+
+        function setRole(role) {
+            currentRole = role;
+            const selector = document.getElementById('roleSelector');
+            selector.setAttribute('data-role', role);
+
+            // Update active state
+            const pills = selector.querySelectorAll('.role-pill');
+            pills.forEach(p => {
+                if (p.innerText.toLowerCase() === role) p.classList.add('active');
+                else p.classList.remove('active');
+            });
+
+            // Update register link visibility
+            if (role === 'doctor') {
+                emailInput.placeholder = "doctor@test.coo";
+                document.getElementById('patientRegLink').style.display = 'none';
+                document.getElementById('doctorRegLink').style.display = 'inline';
+            } else {
+                emailInput.placeholder = "mohan@gmail.com";
+                document.getElementById('patientRegLink').style.display = 'inline';
+                document.getElementById('doctorRegLink').style.display = 'none';
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('loginBtn');
+            const alert = document.getElementById('error-alert');
+
+            // UI Loading state
+            btn.classList.add('btn-loading');
+            btn.disabled = true;
+            alert.style.display = 'none';
+
+            try {
+                // Make API Call
+                const response = await Auth.apiCall('login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (response.success) {
+                    const userData = response.user;
+                    Auth.login(userData);
+                } else {
+                    alert.textContent = response.error || "Invalid credentials. Please try again.";
+                    alert.style.display = 'block';
+                }
+            } catch (err) {
+                alert.textContent = "Server connection failed. Please try again later.";
+                alert.style.display = 'block';
+            } finally {
+                btn.classList.remove('btn-loading');
+                btn.disabled = false;
+            }
+        });
+        // Mobile Menu Logic
+        function updateMenuIcon(isActive) {
+            const lines = menuToggle.querySelectorAll('line');
+
+            if (isActive) {
+                lines[0].setAttribute('x1', '6');
+                lines[0].setAttribute('y1', '6');
+                lines[0].setAttribute('x2', '18');
+                lines[0].setAttribute('y2', '18');
+                lines[1].style.opacity = '0';
+                lines[2].setAttribute('x1', '6');
+                lines[2].setAttribute('y1', '18');
+                lines[2].setAttribute('x2', '18');
+                lines[2].setAttribute('y2', '6');
+            } else {
+                lines[0].setAttribute('x1', '3');
+                lines[0].setAttribute('y1', '6');
+                lines[0].setAttribute('x2', '21');
+                lines[0].setAttribute('y2', '6');
+                lines[1].style.opacity = '1';
+                lines[2].setAttribute('x1', '3');
+                lines[2].setAttribute('y1', '18');
+                lines[2].setAttribute('x2', '21');
+                lines[2].setAttribute('y2', '18');
+            }
+
+            lines[1].setAttribute('x1', '3');
+            lines[1].setAttribute('y1', '12');
+            lines[1].setAttribute('x2', '21');
+            lines[1].setAttribute('y2', '12');
+            menuToggle.setAttribute('aria-expanded', String(isActive));
+        }
+
+        function closeMenu() {
+            mobileMenu.classList.remove('active');
+            if (!document.getElementById('loginModal').classList.contains('active')) {
+                document.body.style.overflow = '';
+            }
+            updateMenuIcon(false);
+        }
+
+        function toggleMenu() {
+            const isActive = mobileMenu.classList.toggle('active');
+            document.body.style.overflow = isActive ? 'hidden' : '';
+            updateMenuIcon(isActive);
+        }
+
+        menuToggle.addEventListener('click', toggleMenu);
+        mobileMenu.addEventListener('click', (event) => {
+            if (event.target === mobileMenu) {
+                closeMenu();
+            }
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 992) {
+                closeMenu();
+            }
+        });
+
+        updateMenuIcon(false);
+    </script>
+</body>
+
+</html>

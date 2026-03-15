@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DentConsent | Ask Your Dental Assistant</title>
+    <link rel="stylesheet" href="css/global.css">
+    <style>
+        /* ── Chat-specific layout overrides ── */
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            max-width: none;
+        }
+
+        .chat-top-bar {
+            flex-shrink: 0;
+            padding: 1.25rem 2.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--surface-card);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        /* The entire chat frame fills the remaining height */
+        .chat-frame {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            margin: 1.25rem 2rem 1.5rem;
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-subtle);
+            background: var(--surface-card);
+            box-shadow: var(--shadow-l1);
+        }
+
+        /* ── Chat header (inside the frame) ── */
+        .chat-frame-header {
+            flex-shrink: 0;
+            padding: 1.125rem 1.75rem;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+
+        .chat-ai-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .chat-header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.75rem;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: var(--radius-full);
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: white;
+            letter-spacing: 0.3px;
+        }
+
+        /* ── Message log ── */
+        .chat-log {
+            flex: 1;
+            padding: 1.5rem 2rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            max-width: 72%;
+            padding: 1rem 1.25rem;
+            line-height: 1.65;
+            font-size: 0.9375rem;
+            word-break: break-word;
+        }
+
+        .message-ai {
+            align-self: flex-start;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-radius: 18px 18px 18px 4px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .message-user {
+            align-self: flex-end;
+            background: var(--brand-primary);
+            color: white;
+            border-radius: 18px 18px 4px 18px;
+            box-shadow: var(--shadow-l2);
+        }
+
+        /* ── Typing indicator ── */
+        .typing-wrap {
+            padding: 0 2rem 0.75rem;
+        }
+
+        .typing-indicator {
+            display: inline-flex;
+            gap: 4px;
+            padding: 0.875rem 1.25rem;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-m);
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-tertiary);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40%           { transform: scale(1.0); }
+        }
+
+        /* ── Quick suggestion chips ── */
+        .suggestions-section {
+            flex-shrink: 0;
+            padding: 0.25rem 2rem 1.25rem;
+        }
+
+        .suggestions-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            margin-bottom: 0.625rem;
+        }
+
+        .suggestions-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .suggestion-chip {
+            display: inline-flex;
+            align-items: center;
+            min-height: 44px;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-full);
+            border: 1.5px solid var(--border-accent);
+            background: white;
+            color: var(--brand-primary);
+            font-size: 0.8125rem;
+            font-weight: 600;
+            font-family: var(--font-body);
+            cursor: pointer;
+            transition: all 0.25s var(--smooth-ease);
+        }
+
+        .suggestion-chip:hover {
+            background: var(--brand-primary);
+            color: white;
+            border-color: var(--brand-primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-l1);
+        }
+
+        /* ── AI disclaimer ── */
+        .ai-disclaimer {
+            flex-shrink: 0;
+            margin: 0 2rem 1rem;
+            padding: 0.625rem 1rem;
+            background: rgba(10, 132, 255, 0.05);
+            border-radius: var(--radius-m);
+            border: 1px solid rgba(10, 132, 255, 0.12);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            line-height: 1.5;
+        }
+
+        /* ── Input area ── */
+        .chat-input-area {
+            flex-shrink: 0;
+            padding: 1rem 1.75rem 1.5rem;
+            border-top: 1px solid var(--border-subtle);
+            background: white;
+            border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+        }
+
+        .input-pill {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-subtle);
+            border-radius: var(--radius-full);
+            padding: 0.375rem 0.375rem 0.375rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s var(--spring-ease);
+        }
+
+        .input-pill:focus-within {
+            background: white;
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 4px rgba(26, 82, 118, 0.08);
+        }
+
+        .chat-input {
+            flex: 1;
+            height: 46px;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-family: var(--font-body);
+            font-size: 0.9375rem;
+            color: var(--text-primary);
+        }
+
+        .chat-input::placeholder {
+            color: var(--text-quaternary);
+        }
+
+        .send-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--brand-primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s var(--spring-ease);
+        }
+
+        .send-btn:hover {
+            transform: scale(1.08);
+            background: var(--brand-secondary);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .ai-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 6px var(--success);
+            flex-shrink: 0;
+        }
+
+        /* ── Mobile bottom nav — hidden on desktop ── */
+        .mobile-bottom-nav {
+            display: none;
+        }
+
+        /* ══════════════════════════════════════════
+           MOBILE RESPONSIVE — max-width: 768px
+           ══════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .dashboard-wrapper {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .chat-main {
+                height: 100dvh;
+                padding-bottom: 56px; /* keep content above fixed bottom nav */
+            }
+
+            .chat-top-bar {
+                padding: 0.875rem 1rem;
+            }
+
+            .chat-frame {
+                flex: 1;
+                min-height: 0;
+                margin: 0.5rem 0.625rem 0.625rem;
+                border-radius: var(--radius-l);
+                /* no explicit height — flex fills remaining space after padding-bottom */
+            }
+
+            .chat-frame-header {
+                padding: 0.875rem 1.25rem;
+                border-radius: var(--radius-l) var(--radius-l) 0 0;
+            }
+
+            .chat-header-badge {
+                display: none; /* hide on mobile to save space */
+            }
+
+            .chat-ai-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 12px;
+            }
+
+            .chat-log {
+                padding: 1rem;
+                gap: 0.75rem;
+            }
+
+            .message {
+                max-width: 90%;
+                font-size: 0.9rem;
+                padding: 0.875rem 1.1rem;
+            }
+
+            .suggestions-section {
+                padding: 0 1rem 1rem;
+            }
+
+            .ai-disclaimer {
+                margin: 0 1rem 0.875rem;
+                font-size: 0.72rem;
+            }
+
+            .typing-wrap {
+                padding: 0 1rem 0.625rem;
+            }
+
+            .chat-input-area {
+                padding: 0.875rem 1rem 1rem;
+                border-radius: 0 0 var(--radius-l) var(--radius-l);
+            }
+
+            .mobile-bottom-nav {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: var(--surface-card);
+                border-top: 1px solid var(--border-subtle);
+                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+                z-index: 200;
+                padding: 0;
+            }
+
+            .mobile-bottom-nav .mobile-nav-item {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 3px;
+                padding: 0.625rem 0.25rem;
+                color: var(--text-tertiary);
+                text-decoration: none;
+                font-size: 10px;
+                font-weight: 600;
+                min-height: 56px;
+                transition: color 0.25s ease;
+            }
+
+            .mobile-bottom-nav .mobile-nav-item.active {
+                color: var(--brand-primary);
+            }
+        }
+    </style>
+</head>
+
+<body class="screen-enter">
+    <div class="dashboard-wrapper">
+
+        <!-- ═══ Sidebar Navigation (mirrors patient-dashboard) ═══ -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="logo-tooth" style="width: 32px; height: 32px;"></div>
+                <span>DentConsent</span>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="patient-dashboard.html" class="sidebar-link">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    <span>Overview</span>
+                </a>
+                <a href="patient-dashboard.html" class="sidebar-link">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                    </svg>
+                    <span>Treatments</span>
+                </a>
+                <a href="patient-dashboard.html" class="sidebar-link">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    <span>Health Library</span>
+                </a>
+                <a href="chat.html" class="sidebar-link active">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                    </svg>
+                    <span>Assistant</span>
+                </a>
+                <a href="patient-dashboard.html" class="sidebar-link">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span>Profile</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile-small" style="cursor: default;">
+                    <div class="avatar" id="sidebarAvatar">P</div>
+                    <div class="user-info">
+                        <div class="user-name" id="sidebarUserName">Patient</div>
+                        <div class="user-role">Patient Account</div>
+                    </div>
+                </div>
+                <button class="btn btn-ghost btn-block" onclick="Auth.logout()"
+                    style="margin-top: 1rem; color: var(--error);">
+                    Sign Out
+                </button>
+            </div>
+        </aside>
+
+        <!-- ═══ Chat Main ═══ -->
+        <main class="chat-main">
+
+            <!-- Top bar -->
+            <header class="chat-top-bar">
+                <a href="patient-dashboard.html" class="btn btn-ghost"
+                    style="gap: 0.5rem; padding: 0.5rem 1rem; min-height: 44px;">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Dashboard
+                </a>
+                <span class="title-m">Dental Assistant</span>
+                <div class="status-badge status-completed" style="font-size: 0.75rem;">AI-Powered</div>
+            </header>
+
+            <!-- Chat frame -->
+            <div class="chat-frame animate-in">
+
+                <!-- Chat frame header -->
+                <header class="chat-frame-header">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div class="chat-ai-avatar">
+                            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="title-m" style="margin: 0; color: white;">Your Dental Assistant</div>
+                            <div style="display: flex; align-items: center; gap: 0.4rem; margin-top: 3px;">
+                                <div class="ai-status-dot"></div>
+                                <span style="font-size: 0.72rem; font-weight: 500; color: rgba(255,255,255,0.75);">Online &amp; Ready</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-header-badge">
+                        <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        DentConsent AI
+                    </div>
+                </header>
+
+                <!-- Message log -->
+                <div class="chat-log" id="chatLog">
+                    <div class="message message-ai animate-in">
+                        Hi there! 👋 I'm your dental care assistant. I can help you understand your treatment plan,
+                        answer questions about what to expect after a procedure, explain dental terms, or give guidance
+                        on caring for your teeth at home.<br><br>What would you like to know?
+                    </div>
+                </div>
+
+                <!-- Typing indicator -->
+                <div id="typingIndicator" class="typing-wrap" style="display: none;">
+                    <div class="typing-indicator">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+
+                <!-- Quick suggestion chips -->
+                <div id="suggestionsSection" class="suggestions-section">
+                    <div class="suggestions-label">Common questions</div>
+                    <div class="suggestions-row">
+                        <button class="suggestion-chip"
+                            onclick="sendSuggestion('What can I eat after my procedure?')">🍜 What can I eat after my
+                            procedure?</button>
+                        <button class="suggestion-chip"
+                            onclick="sendSuggestion('How do I manage pain after dental surgery?')">💊 Managing pain
+                            after surgery</button>
+                        <button class="suggestion-chip"
+                            onclick="sendSuggestion('How do I care for my teeth after extraction?')">🦷 Care after
+                            extraction</button>
+                        <button class="suggestion-chip"
+                            onclick="sendSuggestion('When should I call my dentist about swelling?')">📞 When to call
+                            my dentist</button>
+                        <button class="suggestion-chip"
+                            onclick="sendSuggestion('How long does recovery usually take?')">⏱️ Recovery time
+                            expectations</button>
+                    </div>
+                </div>
+
+                <!-- AI disclaimer -->
+                <div class="ai-disclaimer">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        style="flex-shrink: 0; margin-top: 1px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>This assistant provides general dental guidance only. It is not a substitute for advice from
+                        your doctor. Always contact your dental team for medical decisions or urgent concerns.</span>
+                </div>
+
+                <!-- Input area -->
+                <div class="chat-input-area">
+                    <div class="input-pill">
+                        <input type="text" id="chatInput" class="chat-input"
+                            placeholder="Ask about your treatment, recovery, or dental care…" autocomplete="off">
+                        <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path
+                                    d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+            </div><!-- /chat-frame -->
+        </main>
+    </div><!-- /dashboard-wrapper -->
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav">
+        <a href="patient-dashboard.html" class="mobile-nav-item">
+            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            <span>Overview</span>
+        </a>
+        <a href="patient-dashboard.html" class="mobile-nav-item">
+            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+            </svg>
+            <span>Treatments</span>
+        </a>
+        <a href="patient-dashboard.html" class="mobile-nav-item">
+            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <span>Library</span>
+        </a>
+        <a href="chat.html" class="mobile-nav-item active">
+            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+            <span>Chat</span>
+        </a>
+        <a href="patient-dashboard.html" class="mobile-nav-item">
+            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script src="js/auth.js"></script>
+    <script src="js/toast.js"></script>
+    <script>
+        const currentUser = Auth.requireAuth();
+
+        // Populate sidebar user info
+        const userName = currentUser.name || currentUser.full_name || 'Patient';
+        document.getElementById('sidebarUserName').textContent = userName;
+        const profileImg = currentUser.profile_image || currentUser.image;
+        if (profileImg) {
+            const fullUrl = Auth.getFullUrl(profileImg);
+            const av = document.getElementById('sidebarAvatar');
+            av.style.backgroundImage = `url('${fullUrl}')`;
+            av.style.backgroundSize = 'cover';
+            av.style.backgroundPosition = 'center';
+            av.textContent = '';
+        } else {
+            document.getElementById('sidebarAvatar').textContent = userName.charAt(0).toUpperCase();
+        }
+
+        const chatInput = document.getElementById('chatInput');
+        const chatLog = document.getElementById('chatLog');
+        const sendBtn = document.getElementById('sendBtn');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        async function sendMessage() {
+            const query = chatInput.value.trim();
+            if (!query) return;
+
+            // Hide suggestion chips after the first message
+            const suggestionsSection = document.getElementById('suggestionsSection');
+            if (suggestionsSection) suggestionsSection.style.display = 'none';
+
+            appendMessage(query, 'message-user');
+            chatInput.value = '';
+
+            sendBtn.disabled = true;
+            typingIndicator.style.display = 'block';
+            scrollToBottom();
+
+            try {
+                const response = await Auth.apiCall('ai_chat', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        message: query,
+                        role: currentUser.role
+                    })
+                });
+
+                typingIndicator.style.display = 'none';
+                sendBtn.disabled = false;
+
+                if (response.success && response.data.reply) {
+                    appendMessage(response.data.reply, 'message-ai');
+                } else {
+                    appendMessage("Sorry, I couldn't get a response right now. Please try again in a moment.", 'message-ai');
+                }
+
+            } catch (err) {
+                typingIndicator.style.display = 'none';
+                sendBtn.disabled = false;
+                appendMessage("Network issue: unable to reach the assistant. Please check your connection and try again.", 'message-ai');
+            }
+        }
+
+        function appendMessage(text, className) {
+            const div = document.createElement('div');
+            div.className = `message ${className} animate-in`;
+            div.textContent = text;
+            chatLog.appendChild(div);
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+        function sendSuggestion(text) {
+            chatInput.value = text;
+            sendMessage();
+        }
+    </script>
+</body>
+
+</html>

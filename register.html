@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DentConsent - Register</title>
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="css/global.css">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-primary);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* Split screen layout */
+        .split-layout {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .split-left {
+            flex: 1;
+            background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+            color: white;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .split-left h1 {
+            font-family: 'Fraunces', serif;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .split-left p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+        .split-right {
+            flex: 1;
+            background-color: var(--background-primary);
+            padding: 2rem 4rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--brand-primary);
+        }
+
+        .role-switch {
+            display: flex;
+            background: var(--background-secondary);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 2rem;
+            align-self: center;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .role-option {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .role-option.active {
+            background: var(--brand-primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(4, 102, 200, 0.2);
+        }
+
+        /* Progress Indicator */
+        .progress-indicator {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-inline: auto;
+            width: 100%;
+        }
+
+        .step-dot {
+            flex: 1;
+            height: 4px;
+            border-radius: 4px;
+            background: rgba(15, 23, 42, 0.1);
+            transition: all 0.3s;
+        }
+
+        .step-dot.active {
+            background: var(--brand-primary);
+        }
+
+        .step-dot.completed {
+            background: var(--brand-primary);
+            opacity: 0.4;
+        }
+
+        /* Wizard container */
+        .wizard-container {
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wizard-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .wizard-header h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .wizard-header p {
+            color: var(--text-tertiary);
+        }
+
+        .step-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Form Controls */
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .chips-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .chip {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(15, 23, 42, 0.1);
+            background: white;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chip:hover {
+            border-color: var(--brand-primary);
+        }
+
+        .chip.selected {
+            background: rgba(4, 102, 200, 0.05);
+            /* brand-primary alpha */
+            border-color: var(--brand-primary);
+            color: var(--brand-primary);
+        }
+
+        .wizard-footer {
+            margin-top: auto;
+            padding-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            padding-bottom: 2rem;
+        }
+
+        .btn-black {
+            background-color: var(--text-primary);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-black:hover {
+            background-color: #000;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid rgba(15, 23, 42, 0.2);
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--text-primary);
+        }
+
+        /* Error block */
+        #errorMessage {
+            color: #EF4444;
+            background: rgba(239, 68, 68, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .split-left {
+                display: none;
+                /* Hide branding on mobile to save space */
+            }
+
+            .split-right {
+                padding: 1.5rem;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .form-row .form-group {
+                margin-bottom: 1.25rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="split-layout">
+        <!-- Left Branding Box -->
+        <div class="split-left">
+            <a href="index.html"
+                style="color: white; text-decoration: none; display: flex; align-items: center; gap: 8px; margin-bottom: 4rem;">
+                <span class="material-icons">medical_services</span>
+                <span style="font-weight: 700; font-size: 1.2rem; letter-spacing: -0.5px;">DentConsent</span>
+            </a>
+            <h1>Digital Consent Made Easy</h1>
+            <p>Join thousands of modern dental clinics and informed patients using secure, digital consent workflows.
+            </p>
+        </div>
+
+        <!-- Right Form Box -->
+        <div class="split-right">
+            <a href="index.html" class="back-link"><span class="material-icons"
+                    style="font-size: 1.2rem;">arrow_back</span> Back to Home</a>
+
+            <div class="role-switch">
+                <div class="role-option active" data-role="patient" onclick="setRole('patient')">Patient</div>
+                <div class="role-option" data-role="doctor" onclick="setRole('doctor')">Doctor</div>
+            </div>
+
+            <!-- Wizard Logic Wrapper -->
+            <div class="wizard-container">
+
+                <div class="progress-indicator" id="progressIndicator">
+                    <!-- Dots generated by JS -->
+                </div>
+
+                <div class="wizard-header">
+                    <h2 id="stepTitle">Let's start with your basics</h2>
+                    <p id="stepSubtitle">Step 1 of 4</p>
+                </div>
+
+                <div id="errorMessage"></div>
+
+                <form id="registerForm">
+                    <input type="hidden" name="role" id="roleInput" value="patient">
+
+                    <!-- PATIENT WIZARD STEPS -->
+                    <div id="patientFlow">
+                        <!-- Step 1: Identity -->
+                        <div class="step-content patient-step" data-title="Identity"
+                            data-subtitle="Let's start with your basics">
+                            <div class="form-group">
+                                <label class="form-label" style="display: flex; align-items: center; gap: 6px;"><span
+                                        class="material-icons" style="font-size: 18px;">person</span> FULL NAME</label>
+                                <input type="text" name="p_full_name" class="form-control" placeholder="Jane Doe">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="display: flex; align-items: center; gap: 6px;"><span
+                                        class="material-icons" style="font-size: 18px;">phone</span> MOBILE
+                                    NUMBER</label>
+                                <input type="tel" name="p_mobile_number" class="form-control" placeholder="1234567890"
+                                    maxlength="10">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="display: flex; align-items: center; gap: 6px;"><span
+                                        class="material-icons" style="font-size: 18px;">mail</span> EMAIL
+                                    ADDRESS</label>
+                                <input type="email" name="p_email" class="form-control" placeholder="jane@example.com">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label"
+                                        style="display: flex; align-items: center; gap: 6px;"><span
+                                            class="material-icons" style="font-size: 18px;">calendar_today</span> DATE
+                                        OF BIRTH</label>
+                                    <input type="text" name="p_dob" class="form-control dob-input"
+                                        placeholder="dd-mm-yyyy" maxlength="10">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">GENDER</label>
+                                    <select name="p_gender" class="form-control">
+                                        <option value="" disabled selected>Select</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Health Info -->
+                        <div class="step-content patient-step" data-title="Health Info"
+                            data-subtitle="Your medical background">
+                            <label class="form-label">COMMON CONDITIONS</label>
+                            <div class="chips-container" id="patientConditions">
+                                <div class="chip" onclick="toggleChip(this)"><span class="material-icons"
+                                        style="font-size: 16px;">add</span> Diabetes</div>
+                                <div class="chip" onclick="toggleChip(this)"><span class="material-icons"
+                                        style="font-size: 16px;">add</span> Heart Disease</div>
+                                <div class="chip" onclick="toggleChip(this)"><span class="material-icons"
+                                        style="font-size: 16px;">add</span> Hypertension</div>
+                                <div class="chip" onclick="toggleChip(this, true)"><span class="material-icons"
+                                        style="font-size: 16px;">add</span> None of the above</div>
+                            </div>
+                            <input type="hidden" name="p_medical_conditions" id="p_medical_conditions">
+
+                            <div class="form-group">
+                                <label class="form-label" style="display: flex; align-items: center; gap: 6px;"><span
+                                        class="material-icons" style="font-size: 18px;">medical_services</span>
+                                    ALLERGIES</label>
+                                <input type="text" name="p_allergies" class="form-control"
+                                    placeholder="e.g. Penicillin, Peanuts">
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Residence -->
+                        <div class="step-content patient-step" data-title="Residence"
+                            data-subtitle="Where can we find you?">
+                            <div class="form-group">
+                                <label class="form-label" style="display: flex; align-items: center; gap: 6px;"><span
+                                        class="material-icons" style="font-size: 18px;">home</span> HOME ADDRESS</label>
+                                <input type="text" name="p_residential_address" class="form-control"
+                                    placeholder="Street, House No, Landmark">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">PINCODE</label>
+                                    <input type="text" name="p_pincode" class="form-control" placeholder="600001"
+                                        maxlength="6">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">CITY</label>
+                                    <input type="text" name="p_city" class="form-control" placeholder="Chennai">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">STATE</label>
+                                <input type="text" name="p_state" class="form-control" placeholder="Tamil Nadu">
+                            </div>
+                        </div>
+
+                        <!-- Step 4: Security -->
+                        <div class="step-content patient-step" data-title="Security"
+                            data-subtitle="Secure your account">
+                            <div class="form-group">
+                                <label class="form-label" style="display: flex; align-items: center; gap: 6px;"><span
+                                        class="material-icons" style="font-size: 18px;">lock</span> PASSWORD</label>
+                                <input type="password" name="p_password" class="form-control" placeholder="••••••••">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="display: flex; align-items: center; gap: 6px;"><span
+                                        class="material-icons" style="font-size: 18px;">lock</span> CONFIRM
+                                    PASSWORD</label>
+                                <input type="password" name="p_confirm_password" class="form-control"
+                                    placeholder="••••••••">
+                            </div>
+                            <label
+                                style="display: flex; align-items: center; gap: 8px; margin-top: 1rem; cursor: pointer; color: var(--text-secondary); font-size: 0.9rem;">
+                                <input type="checkbox" name="p_terms" id="p_terms"
+                                    style="width: 18px; height: 18px; accent-color: var(--brand-primary);">
+                                I accept the Terms of Service and Privacy Policy.
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- DOCTOR WIZARD STEPS -->
+                    <div id="doctorFlow" style="display: none;">
+                        <!-- Step 1: Personal Info -->
+                        <div class="step-content doctor-step" data-title="Personal Info"
+                            data-subtitle="Let's start with the basics">
+                            <div class="form-group">
+                                <label class="form-label" style="display: flex; align-items: center; gap: 6px;"><span
+                                        class="material-icons" style="font-size: 18px;">person</span> FULL NAME</label>
+                                <input type="text" name="d_full_name" class="form-control" placeholder="Dr. Jane Doe">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="display: flex; align-items: center; gap: 6px;"><span
+                                        class="material-icons" style="font-size: 18px;">phone</span> MOBILE
+                                    NUMBER</label>
+                                <input type="tel" name="d_mobile_number" class="form-control" placeholder="1234567890"
+                                    maxlength="10">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="display: flex; align-items: center; gap: 6px;"><span
+                                        class="material-icons" style="font-size: 18px;">mail</span> EMAIL
+                                    ADDRESS</label>
+                                <input type="email" name="d_email" class="form-control" placeholder="doctor@clinic.com">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label"
+                                        style="display: flex; align-items: center; gap: 6px;"><span
+                                            class="material-icons" style="font-size: 18px;">calendar_today</span> DATE
+                                        OF BIRTH</label>
+                                    <input type="text" name="d_dob" class="form-control dob-input"
+                                        placeholder="dd-mm-yyyy" maxlength="10">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">GENDER</label>
+                                    <select name="d_gender" class="form-control">
+                                        <option value="" disabled selected>Select</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Professional Info -->
+                        <div class="step-content doctor-step" data-title="Professional"
+                            data-subtitle="Your credentials & expertise">
+                            <div class="form-group">
+                                <label class="form-label" style="display: flex; align-items: center; gap: 6px;"><span
+                                        class="material-icons" style="font-size: 18px;">badge</span> DENTAL COUNCIL
+                                    ID</label>
+                                <input type="text" name="d_council_id" class="form-control" placeholder="e.g. MH/12345">
+                            </div>
+                            <label class="form-label">QUALIFICATIONS</label>
+                            <div class="chips-container" id="doctorQuals">
+                                <div class="chip" onclick="toggleChip(this)"><span class="material-icons"
+                                        style="font-size: 16px;">add</span> BDS</div>
+                                <div class="chip" onclick="toggleChip(this)"><span class="material-icons"
+                                        style="font-size: 16px;">add</span> MDS</div>
+                                <div class="chip" onclick="toggleChip(this)"><span class="material-icons"
+                                        style="font-size: 16px;">add</span> DDS</div>
+                            </div>
+                            <input type="hidden" name="d_qualifications" id="d_qualifications">
+
+                            <div class="form-group">
+                                <label class="form-label">SPECIALIZATION</label>
+                                <select name="d_specialization" class="form-control">
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="Implantologist">Implantologist</option>
+                                    <option value="Prosthodontist">Prosthodontist</option>
+                                    <option value="Orthodontist">Orthodontist</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" style="display: flex; align-items: center; gap: 6px;"><span
+                                        class="material-icons" style="font-size: 18px;">work</span> YEARS OF
+                                    EXPERIENCE</label>
+                                <input type="number" name="d_experience_years" class="form-control" placeholder="e.g. 5"
+                                    min="0">
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Security -->
+                        <div class="step-content doctor-step" data-title="Account Security"
+                            data-subtitle="Secure your doctor account">
+                            <div class="form-group">
+                                <label class="form-label" style="display: flex; align-items: center; gap: 6px;"><span
+                                        class="material-icons" style="font-size: 18px;">lock</span> PASSWORD</label>
+                                <input type="password" name="d_password" class="form-control" placeholder="••••••••">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="display: flex; align-items: center; gap: 6px;"><span
+                                        class="material-icons" style="font-size: 18px;">lock</span> CONFIRM
+                                    PASSWORD</label>
+                                <input type="password" name="d_confirm_password" class="form-control"
+                                    placeholder="••••••••">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="wizard-footer" id="wizardFooter">
+                    <button type="button" class="btn-outline" id="btnBack" onclick="changeStep(-1)"
+                        style="display: none;">
+                        <span class="material-icons">arrow_back</span>
+                    </button>
+                    <button type="button" class="btn-black" id="btnNext" onclick="changeStep(1)">
+                        CONTINUE <span class="material-icons">east</span>
+                    </button>
+                </div>
+
+                <p id="signInLink" style="text-align: center; margin-top: 1rem; color: var(--text-secondary);">
+                    Already have an account? <a href="index.html"
+                        style="color: var(--brand-primary); font-weight: 600;">Sign In</a>
+                </p>
+
+                <!-- OTP Verification Container -->
+                <div id="otpContainer"
+                    style="display: none; align-items: center; justify-content: center; height: 100%; min-height: 400px; width: 100%;">
+                    <div style="text-align: center; max-width: 400px; width: 100%;">
+                        <div
+                            style="background: rgba(4, 102, 200, 0.1); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto;">
+                            <span class="material-icons"
+                                style="font-size: 32px; color: var(--brand-primary);">lock_outline</span>
+                        </div>
+                        <h2 style="font-family: 'Fraunces', serif; font-size: 2rem; margin-bottom: 0.5rem;">Verify Email
+                        </h2>
+                        <p style="color: var(--text-secondary); margin-bottom: 2rem;">We've sent a 4-digit code to
+                            <br><b id="otpEmailDisplay">your email</b>.<br><br>Enter it below to activate your account.
+                        </p>
+
+                        <div class="form-group" style="text-align: left;">
+                            <input type="text" id="otpInput" class="form-control" placeholder="----" maxlength="4"
+                                style="text-align: center; font-size: 2rem; letter-spacing: 1rem; font-weight: 600; padding: 1rem;">
+                        </div>
+
+                        <button type="button" id="btnVerifyOTP" class="btn btn-primary"
+                            style="width: 100%; margin-top: 1rem;" onclick="verifyOTP()">VERIFY & LOGIN <span
+                                class="material-icons">how_to_reg</span></button>
+                        <button type="button" class="btn btn-outline"
+                            style="width: 100%; margin-top: 1rem; border: none; font-weight: 600;"
+                            onclick="resendOTP()">RESEND CODE</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/toast.js"></script>
+    <script>
+        // Redirect if logged in
+        Auth.redirectIfLoggedIn();
+
+        let currentRole = 'patient';
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('role') === 'doctor') {
+            currentRole = 'doctor';
+        }
+
+        let currentStepIdx = 0;
+        let steps = [];
+
+        const form = document.forms['registerForm'];
+        const errorBox = document.getElementById('errorMessage');
+
+        function showError(msg) {
+            errorBox.innerText = msg;
+            errorBox.style.display = 'block';
+        }
+
+        function hideError() {
+            errorBox.style.display = 'none';
+            errorBox.innerText = '';
+        }
+
+        function initWizard() {
+            // Collect steps based on active role
+            steps = Array.from(document.querySelectorAll(`.${currentRole}-step`));
+            currentStepIdx = 0;
+            updateUI();
+        }
+
+        function updateUI() {
+            hideError();
+            // Hide all steps, show the current one
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            const activeStep = steps[currentStepIdx];
+            activeStep.classList.add('active');
+
+            // Update headers
+            document.getElementById('stepTitle').innerText = activeStep.dataset.title;
+            document.getElementById('stepSubtitle').innerText = `Step ${currentStepIdx + 1} of ${steps.length} — ${activeStep.dataset.subtitle}`;
+
+            // Update dots
+            const indicator = document.getElementById('progressIndicator');
+            indicator.innerHTML = '';
+            for (let i = 0; i < steps.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'step-dot ' + (i === currentStepIdx ? 'active' : (i < currentStepIdx ? 'completed' : ''));
+                indicator.appendChild(dot);
+            }
+
+            // Update Buttons
+            const btnBack = document.getElementById('btnBack');
+            const btnNext = document.getElementById('btnNext');
+
+            btnBack.style.display = currentStepIdx === 0 ? 'none' : 'flex';
+
+            if (currentStepIdx === steps.length - 1) {
+                btnNext.innerHTML = 'COMPLETE REGISTRATION <span class="material-icons">check</span>';
+            } else {
+                btnNext.innerHTML = 'CONTINUE <span class="material-icons">east</span>';
+            }
+        }
+
+        function setRole(role, forceInit = false) {
+            if (currentRole === role && !forceInit) return;
+            currentRole = role;
+
+            // Update styling
+            document.querySelectorAll('.role-option').forEach(el => {
+                if (el.dataset.role === role) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+
+            // Hide old flow, show new flow
+            document.getElementById('patientFlow').style.display = role === 'patient' ? 'block' : 'none';
+            document.getElementById('doctorFlow').style.display = role === 'doctor' ? 'block' : 'none';
+
+            document.getElementById('roleInput').value = role;
+
+            initWizard();
+        }
+
+        function validateStep() {
+            const prefix = currentRole === 'patient' ? 'p_' : 'd_';
+
+            if (currentRole === 'patient') {
+                if (currentStepIdx === 0) { // Identity
+                    let name = form[`${prefix}full_name`].value;
+                    let mob = form[`${prefix}mobile_number`].value;
+                    let email = form[`${prefix}email`].value;
+                    let dob = form[`${prefix}dob`].value;
+                    let gender = form[`${prefix}gender`].value;
+
+                    if (name.length < 3) return "Name must be at least 3 characters";
+                    if (mob.length !== 10) return "10-digit mobile number required";
+                    if (!email.includes("@")) return "Invalid email address";
+                    if (dob.length < 10) return "Invalid DOB format (DD-MM-YYYY)";
+                    if (!gender) return "Please select your gender";
+                }
+                if (currentStepIdx === 1) { // Health Info
+                    // Optional, basically always pass. We will collect chips later.
+                }
+                if (currentStepIdx === 2) { // Residence
+                    let address = form[`${prefix}residential_address`].value;
+                    let pin = form[`${prefix}pincode`].value;
+                    let city = form[`${prefix}city`].value;
+                    let state = form[`${prefix}state`].value;
+                    if (!address || !city || !state || pin.length !== 6) return "Complete address and 6-digit pincode required";
+                }
+                if (currentStepIdx === 3) { // Security
+                    let pass = form[`${prefix}password`].value;
+                    let conf = form[`${prefix}confirm_password`].value;
+                    let terms = form[`${prefix}terms`].checked;
+                    if (pass.length < 6) return "Password must be at least 6 characters";
+                    if (pass !== conf) return "Passwords do not match";
+                    if (!terms) return "Please accept the terms to continue";
+                }
+            } else {
+                if (currentStepIdx === 0) { // Personal
+                    let name = form[`${prefix}full_name`].value;
+                    let mob = form[`${prefix}mobile_number`].value;
+                    let email = form[`${prefix}email`].value;
+                    let dob = form[`${prefix}dob`].value;
+                    let gender = form[`${prefix}gender`].value;
+                    if (name.length < 3) return "Name must be at least 3 characters";
+                    if (mob.length !== 10) return "10-digit mobile number required";
+                    if (!email.includes("@")) return "Invalid email address";
+                    if (dob.length < 10) return "Invalid DOB format (DD-MM-YYYY)";
+                    if (!gender) return "Please select your gender";
+                }
+                if (currentStepIdx === 1) { // Professional
+                    let cid = form[`${prefix}council_id`].value;
+                    if (!cid) return "Please enter your Dental Council ID";
+                }
+                if (currentStepIdx === 2) { // Security
+                    let pass = form[`${prefix}password`].value;
+                    let conf = form[`${prefix}confirm_password`].value;
+                    if (pass.length < 6) return "Password must be at least 6 characters";
+                    if (pass !== conf) return "Passwords do not match";
+                }
+            }
+            return null; // Valid
+        }
+
+        async function changeStep(delta) {
+            if (delta === 1) {
+                const err = validateStep();
+                if (err) {
+                    showError(err);
+                    return;
+                }
+            }
+
+            if (currentStepIdx + delta < steps.length && currentStepIdx + delta >= 0) {
+                currentStepIdx += delta;
+                updateUI();
+            } else if (currentStepIdx + delta === steps.length) {
+                // Submit form
+                submitRegistration();
+            }
+        }
+
+        function toggleChip(element, isNone = false) {
+            let parent = element.parentElement;
+            if (isNone) {
+                // Unselect everything else
+                let chips = parent.querySelectorAll('.chip');
+                chips.forEach(c => {
+                    if (c !== element) {
+                        c.classList.remove('selected');
+                        c.querySelector('span').innerText = 'add';
+                    }
+                });
+                element.classList.toggle('selected');
+                element.querySelector('span').innerText = element.classList.contains('selected') ? 'check' : 'add';
+            } else {
+                // Ensure child is not selected if it's the 'None' button (which is the last child in the patient array usually)
+                // But doing it generically:
+                let noneChip = Array.from(parent.querySelectorAll('.chip')).find(c => c.innerText.includes('None'));
+                if (noneChip && noneChip.classList.contains('selected')) {
+                    noneChip.classList.remove('selected');
+                    noneChip.querySelector('span').innerText = 'add';
+                }
+                element.classList.toggle('selected');
+                element.querySelector('span').innerText = element.classList.contains('selected') ? 'check' : 'add';
+            }
+        }
+
+        // Capture chips value on submit
+        function compileChips(containerId) {
+            let container = document.getElementById(containerId);
+            let selected = [];
+            container.querySelectorAll('.chip.selected').forEach(c => {
+                selected.push(c.innerText.replace('check\n', '').replace('add\n', '').trim());
+            });
+            return selected.join(', ');
+        }
+
+        async function submitRegistration() {
+            const btnNext = document.getElementById('btnNext');
+            btnNext.disabled = true;
+            btnNext.innerHTML = 'PROCESSING... <span class="material-icons">loop</span>';
+
+            const prefix = currentRole === 'patient' ? 'p_' : 'd_';
+
+            // Format data as FormData to match Python Backend Expectations
+            let formData = new FormData();
+            formData.append('role', currentRole);
+            formData.append('email', form[`${prefix}email`].value);
+            formData.append('password', form[`${prefix}password`].value);
+            formData.append('full_name', form[`${prefix}full_name`].value);
+            formData.append('mobile_number', form[`${prefix}mobile_number`].value);
+            formData.append('dob', form[`${prefix}dob`].value);
+
+            let genderSelect = form[`${prefix}gender`];
+            formData.append('gender', genderSelect.options[genderSelect.selectedIndex].value);
+
+            if (currentRole === 'patient') {
+                document.getElementById('p_medical_conditions').value = compileChips('patientConditions');
+                formData.append('medicalConditions', document.getElementById('p_medical_conditions').value);
+                formData.append('allergies', form[`${prefix}allergies`].value);
+                formData.append('residential_address', form[`${prefix}residential_address`].value);
+                formData.append('pincode', form[`${prefix}pincode`].value);
+                formData.append('city', form[`${prefix}city`].value);
+                formData.append('state', form[`${prefix}state`].value);
+            } else {
+                document.getElementById('d_qualifications').value = compileChips('doctorQuals');
+                formData.append('council_id', form[`${prefix}council_id`].value);
+                formData.append('qualifications', document.getElementById('d_qualifications').value);
+                let specSelect = form[`${prefix}specialization`];
+                formData.append('specialization', specSelect.options[specSelect.selectedIndex].value || '');
+                // The python backend doesn't explicitly take experience_years in the /register endpoint (wait, need to check, let's just append it just in case)
+                formData.append('experience_years', form[`${prefix}experience_years`].value);
+            }
+
+            try {
+                const result = await Auth.apiCall('register', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (result.success) {
+                    // Start OTP Verification Flow
+                    const registeredEmail = form[`${prefix}email`].value;
+                    const otpRes = await Auth.apiCall('send_otp', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: registeredEmail, action: 'Registration Verification' })
+                    });
+
+                    if (otpRes.success) {
+                        // Hide Wizard, Show OTP Container
+                        document.getElementById('registerForm').style.display = 'none';
+                        document.querySelector('.wizard-header').style.display = 'none';
+                        document.getElementById('progressIndicator').style.display = 'none';
+                        document.querySelector('.role-switch').style.display = 'none';
+                        document.getElementById('wizardFooter').style.display = 'none';
+                        document.getElementById('signInLink').style.display = 'none';
+                        hideError();
+
+                        document.getElementById('otpEmailDisplay').innerText = registeredEmail;
+                        document.getElementById('otpContainer').style.display = 'flex';
+                    } else {
+                        showError('Account created, but failed to send OTP. Please contact support.');
+                    }
+                } else {
+                    showError(result.error || "Registration failed. Please try again.");
+                }
+            } catch (e) {
+                showError("Network error. Please try again.");
+            } finally {
+                btnNext.disabled = false;
+                btnNext.innerHTML = 'COMPLETE REGISTRATION <span class="material-icons">check</span>';
+            }
+        }
+
+        async function verifyOTP() {
+            const btnVerify = document.getElementById('btnVerifyOTP');
+            const otpVal = document.getElementById('otpInput').value.trim();
+            const prefix = currentRole === 'patient' ? 'p_' : 'd_';
+            const email = form[`${prefix}email`].value;
+            const password = form[`${prefix}password`].value;
+
+            if (otpVal.length !== 4) {
+                showError('Please enter a valid 4-digit code.');
+                return;
+            }
+
+            btnVerify.disabled = true;
+            btnVerify.innerHTML = 'VERIFYING... <span class="material-icons">loop</span>';
+            hideError();
+
+            try {
+                const result = await Auth.apiCall('verify_otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        otp: otpVal,
+                        action: 'Registration Verification'
+                    })
+                });
+
+                if (result.success) {
+                    // OTP Verified! Now direct login
+                    const loginResult = await Auth.apiCall('login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: email, password: password })
+                    });
+
+                    if (loginResult.success) {
+                        Auth.login(loginResult.user);
+                    } else {
+                        showError('Verified, but auto-login failed. Redirecting to home...');
+                        setTimeout(() => { window.location.href = 'index.html'; }, 2000);
+                    }
+                } else {
+                    showError(result.message || 'Verification failed. Please try again.');
+                    btnVerify.disabled = false;
+                    btnVerify.innerHTML = 'VERIFY & LOGIN <span class="material-icons">how_to_reg</span>';
+                }
+            } catch (err) {
+                showError('Network error. Please check connection.');
+                btnVerify.disabled = false;
+                btnVerify.innerHTML = 'VERIFY & LOGIN <span class="material-icons">how_to_reg</span>';
+            }
+        }
+
+        async function resendOTP() {
+            const prefix = currentRole === 'patient' ? 'p_' : 'd_';
+            const email = form[`${prefix}email`].value;
+
+            try {
+                const result = await Auth.apiCall('send_otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, action: 'Registration Verification' })
+                });
+                if (result.success) {
+                    showToast('A new code has been sent to your email.', 'success');
+                } else {
+                    showError(result.message || 'Failed to resend OTP.');
+                }
+            } catch (e) { }
+        }
+
+        // Auto-format DOB inputs
+        document.querySelectorAll('.dob-input').forEach(input => {
+            input.addEventListener('input', function (e) {
+                if (e.inputType === 'deleteContentBackward') return;
+
+                let v = this.value.replace(/\D/g, '');
+                if (v.length >= 2 && v.length < 4) {
+                    this.value = v.substring(0, 2) + '-' + v.substring(2);
+                } else if (v.length >= 4) {
+                    this.value = v.substring(0, 2) + '-' + v.substring(2, 4) + '-' + v.substring(4, 8);
+                }
+            });
+        });
+
+        // Initialize the default wizard on load
+        setRole(currentRole, true);
+    </script>
+
+</body>
+
+</html>

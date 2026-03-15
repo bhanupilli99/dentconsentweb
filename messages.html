@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DentConsent | Messages</title>
+    <link rel="stylesheet" href="css/global.css">
+    <style>
+        body { background: var(--bg-primary); }
+
+        .messages-layout {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ── Sidebar: conversation list ── */
+        .conv-sidebar {
+            width: 320px;
+            flex-shrink: 0;
+            border-right: 1px solid var(--border-subtle);
+            background: var(--surface-card);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .conv-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+        }
+
+        .conv-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .conv-item {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-subtle);
+            transition: background 0.15s;
+        }
+
+        .conv-item:hover { background: var(--bg-secondary); }
+        .conv-item.active { background: var(--brand-primary-light); border-left: 3px solid var(--brand-primary); }
+
+        .conv-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--brand-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .conv-meta { flex: 1; min-width: 0; }
+        .conv-name { font-weight: 700; font-size: 14px; color: var(--text-primary); }
+        .conv-preview {
+            font-size: 12px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 2px;
+        }
+        .conv-time { font-size: 11px; color: var(--text-tertiary); white-space: nowrap; }
+
+        /* ── Main chat area ── */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 1rem 1.75rem;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: white;
+            flex-shrink: 0;
+        }
+
+        .online-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--success);
+            flex-shrink: 0;
+        }
+
+        .messages-log {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            scroll-behavior: smooth;
+        }
+
+        .msg-bubble {
+            max-width: 68%;
+            padding: 0.875rem 1.125rem;
+            line-height: 1.6;
+            font-size: 0.9375rem;
+            word-break: break-word;
+            position: relative;
+        }
+
+        .msg-bubble.theirs {
+            align-self: flex-start;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 18px 18px 18px 4px;
+            color: var(--text-primary);
+        }
+
+        .msg-bubble.mine {
+            align-self: flex-end;
+            background: var(--brand-primary);
+            color: white;
+            border-radius: 18px 18px 4px 18px;
+            box-shadow: var(--shadow-l1);
+        }
+
+        .msg-time {
+            font-size: 10px;
+            opacity: 0.6;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .msg-name {
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            opacity: 0.6;
+        }
+
+        .date-divider {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-tertiary);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 0.5rem 0;
+        }
+
+        .chat-input-bar {
+            flex-shrink: 0;
+            padding: 1rem 1.75rem;
+            border-top: 1px solid var(--border-subtle);
+            background: white;
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .msg-input {
+            flex: 1;
+            padding: 0.75rem 1.25rem;
+            border: 2px solid var(--border-subtle);
+            border-radius: var(--radius-full);
+            font-size: 0.9375rem;
+            font-family: var(--font-body);
+            background: var(--bg-secondary);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .msg-input:focus {
+            border-color: var(--brand-primary);
+            background: white;
+        }
+
+        .send-msg-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--brand-primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .send-msg-btn:hover { transform: scale(1.08); background: var(--brand-secondary); }
+        .send-msg-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+        /* Empty states */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 4rem 2rem;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--brand-primary-light);
+            color: var(--brand-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        /* No treatment state */
+        .blocked-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 3rem 2rem;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .conv-sidebar {
+                width: 100%;
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                z-index: 10;
+            }
+            .conv-sidebar.hidden { display: none; }
+            .chat-area { width: 100%; }
+            .messages-log { padding: 1rem; }
+            .chat-input-bar { padding: 0.75rem 1rem; }
+            .back-to-conv-btn { display: flex; }
+        }
+
+        .back-to-conv-btn {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            background: none;
+            border: none;
+            color: var(--brand-primary);
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body class="screen-enter">
+    <div class="messages-layout">
+
+        <!-- Conversation Sidebar -->
+        <aside class="conv-sidebar" id="convSidebar">
+            <div class="conv-header">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <a href="#" onclick="goBack()" class="btn btn-ghost" style="padding: 0.4rem 0.75rem; font-size: 13px; gap: 0.4rem;">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                        Back
+                    </a>
+                    <h2 class="title-m" style="margin:0;">Messages</h2>
+                </div>
+                <div class="label-s text-muted" id="convSubtitle">Your clinical conversations</div>
+            </div>
+            <div class="conv-list" id="convList">
+                <div style="padding: 2rem; text-align: center;">
+                    <div class="loading-spinner" style="margin: 0 auto 1rem;"></div>
+                    <p class="body-s text-muted">Loading conversations...</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Chat Area -->
+        <main class="chat-area" id="chatArea">
+            <!-- Empty / Select state -->
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">💬</div>
+                <h3 class="title-l">Select a conversation</h3>
+                <p class="body-m text-secondary">Choose a conversation from the list to start messaging.</p>
+            </div>
+
+            <!-- Active Conversation (hidden until selected) -->
+            <div id="activeChat" style="display: none; flex-direction: column; height: 100%;">
+                <div class="chat-header">
+                    <button class="back-to-conv-btn" id="backToConvBtn" onclick="showConvSidebar()">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </button>
+                    <div class="conv-avatar" id="activeChatAvatar" style="width: 40px; height: 40px; font-size: 1rem;"></div>
+                    <div style="flex: 1;">
+                        <div class="title-m" id="activeChatName">-</div>
+                        <div style="display: flex; align-items: center; gap: 0.4rem;">
+                            <div class="online-dot"></div>
+                            <span class="label-s text-secondary" id="activeChatRole">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="messages-log" id="messagesLog"></div>
+                <div class="chat-input-bar">
+                    <input type="text" id="msgInput" class="msg-input"
+                        placeholder="Type your message..."
+                        onkeypress="if(event.key==='Enter') sendMsg()">
+                    <button class="send-msg-btn" id="sendMsgBtn" onclick="sendMsg()">
+                        <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/toast.js"></script>
+    <script>
+        const currentUser = Auth.requireAuth();
+        const urlParams = new URLSearchParams(window.location.search);
+        const withUserId = urlParams.get('with'); // optional: auto-open conversation
+
+        let activeConvUserId = null;
+        let pollInterval = null;
+        let conversations = [];
+
+        // ── Go back to correct dashboard ──
+        function goBack() {
+            if (currentUser.role === 'doctor') {
+                window.location.href = 'doctor-dashboard.html';
+            } else {
+                window.location.href = 'patient-dashboard.html';
+            }
+        }
+
+        // ── Init: load conversations based on role ──
+        async function init() {
+            const res = await Auth.apiCall(`get_treatments?user_id=${currentUser.id}&role=${currentUser.role}`);
+
+            if (!res.success) {
+                showBlocked('Could not load your treatment data. Please try again.');
+                return;
+            }
+
+            const treatments = res.data?.treatments || res.data || [];
+
+            if (!treatments || treatments.length === 0) {
+                showBlocked(
+                    currentUser.role === 'patient'
+                        ? 'You have no assigned treatments yet. A doctor will be able to message you once a treatment has been assigned.'
+                        : 'You have no assigned patients yet. Assign a treatment to a patient to start messaging.'
+                );
+                return;
+            }
+
+            // Build unique conversation partners from treatments
+            const seen = new Set();
+            conversations = [];
+
+            treatments.forEach(t => {
+                const partnerId = currentUser.role === 'patient' ? t.doctor_id : t.patient_id;
+                const partnerName = currentUser.role === 'patient' ? t.doctor_name : t.patient_name;
+                const partnerImage = currentUser.role === 'patient' ? t.doctor_image : t.patient_image;
+
+                if (partnerId && !seen.has(partnerId)) {
+                    seen.add(partnerId);
+                    conversations.push({
+                        userId: partnerId,
+                        fullName: partnerName || (currentUser.role === 'patient' ? 'Doctor' : 'Patient'),
+                        image: partnerImage,
+                        role: currentUser.role === 'patient' ? 'doctor' : 'patient',
+                        lastMessage: null,
+                        lastTime: null
+                    });
+                }
+            });
+
+            // Load last messages for each conversation
+            await loadLastMessages();
+            renderConvList();
+
+            // Auto-open if ?with=USER_ID param provided
+            if (withUserId) {
+                const conv = conversations.find(c => c.userId == withUserId);
+                if (conv) openConversation(conv.userId);
+            }
+        }
+
+        async function loadLastMessages() {
+            for (const conv of conversations) {
+                try {
+                    const res = await Auth.apiCall(`get_messages?user1_id=${currentUser.id}&user2_id=${conv.userId}`);
+                    if (res.success && res.data?.messages?.length > 0) {
+                        const msgs = res.data.messages;
+                        const last = msgs[msgs.length - 1];
+                        conv.lastMessage = last.message;
+                        conv.lastTime = last.created_at;
+                    }
+                } catch(e) {}
+            }
+
+            // Sort by most recent
+            conversations.sort((a,b) => {
+                if (!a.lastTime) return 1;
+                if (!b.lastTime) return -1;
+                return new Date(b.lastTime) - new Date(a.lastTime);
+            });
+        }
+
+        function renderConvList() {
+            const list = document.getElementById('convList');
+
+            if (conversations.length === 0) {
+                list.innerHTML = `<div style="padding: 2rem; text-align: center; color: var(--text-secondary); font-size: 14px;">No conversations yet.</div>`;
+                return;
+            }
+
+            list.innerHTML = conversations.map(conv => {
+                const initial = (conv.fullName || '?').charAt(0).toUpperCase();
+                const time = conv.lastTime ? formatTime(conv.lastTime) : '';
+                const preview = conv.lastMessage
+                    ? (conv.lastMessage.length > 40 ? conv.lastMessage.substring(0, 40) + '…' : conv.lastMessage)
+                    : 'Start a conversation';
+
+                const isActive = conv.userId == activeConvUserId ? 'active' : '';
+                const roleLabel = conv.role === 'doctor' ? '🩺 Doctor' : '👤 Patient';
+
+                return `
+                    <div class="conv-item ${isActive}" onclick="openConversation(${conv.userId})" id="conv-${conv.userId}">
+                        <div class="conv-avatar" id="convAvatar-${conv.userId}"
+                            ${conv.image ? `style="background-image: url('${Auth.getFullUrl(conv.image)}'); color: transparent;"` : ''}>
+                            ${conv.image ? '' : initial}
+                        </div>
+                        <div class="conv-meta">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="conv-name">${conv.fullName}</div>
+                                <div class="conv-time">${time}</div>
+                            </div>
+                            <div class="conv-preview">${preview}</div>
+                            <div style="font-size: 10px; color: var(--brand-primary); font-weight: 600; margin-top: 2px;">${roleLabel}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function openConversation(userId) {
+            activeConvUserId = userId;
+            const conv = conversations.find(c => c.userId == userId);
+
+            // Mobile: hide sidebar
+            if (window.innerWidth <= 768) {
+                document.getElementById('convSidebar').classList.add('hidden');
+            }
+
+            // Update active state in list
+            document.querySelectorAll('.conv-item').forEach(el => el.classList.remove('active'));
+            const convEl = document.getElementById(`conv-${userId}`);
+            if (convEl) convEl.classList.add('active');
+
+            // Update chat header
+            const initial = (conv?.fullName || '?').charAt(0).toUpperCase();
+            const avatarEl = document.getElementById('activeChatAvatar');
+            avatarEl.textContent = initial;
+            avatarEl.style.backgroundImage = '';
+            if (conv?.image) {
+                avatarEl.style.backgroundImage = `url('${Auth.getFullUrl(conv.image)}')`;
+                avatarEl.style.backgroundSize = 'cover';
+                avatarEl.style.backgroundPosition = 'center';
+                avatarEl.textContent = '';
+            }
+            document.getElementById('activeChatName').textContent = conv?.fullName || 'Unknown';
+            document.getElementById('activeChatRole').textContent = conv?.role === 'doctor' ? 'Your Dental Specialist' : 'Patient';
+
+            // Show active chat panel
+            document.getElementById('emptyState').style.display = 'none';
+            const activePanel = document.getElementById('activeChat');
+            activePanel.style.display = 'flex';
+
+            // Load messages
+            await loadMessages(userId);
+
+            // Start polling for new messages every 5s
+            if (pollInterval) clearInterval(pollInterval);
+            pollInterval = setInterval(() => loadMessages(userId, true), 5000);
+
+            // Focus input
+            document.getElementById('msgInput').focus();
+        }
+
+        async function loadMessages(userId, silent = false) {
+            try {
+                const res = await Auth.apiCall(`get_messages?user1_id=${currentUser.id}&user2_id=${userId}`);
+                if (!res.success) return;
+
+                const messages = res.data?.messages || [];
+                renderMessages(messages);
+            } catch(e) {
+                if (!silent) showToast('Could not load messages.', 'error');
+            }
+        }
+
+        function renderMessages(messages) {
+            const log = document.getElementById('messagesLog');
+            const wasAtBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 60;
+
+            let html = '';
+            let lastDate = null;
+
+            messages.forEach(msg => {
+                const msgDate = new Date(msg.created_at).toLocaleDateString();
+                if (msgDate !== lastDate) {
+                    html += `<div class="date-divider">${formatDate(msg.created_at)}</div>`;
+                    lastDate = msgDate;
+                }
+
+                const ismine = msg.sender_id == currentUser.id;
+                const time = new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                html += `
+                    <div class="msg-bubble ${ismine ? 'mine' : 'theirs'}">
+                        ${msg.message}
+                        <span class="msg-time">${time}</span>
+                    </div>
+                `;
+            });
+
+            if (!html) {
+                html = `<div style="text-align: center; color: var(--text-tertiary); font-size: 13px; padding: 2rem;">No messages yet. Send the first one!</div>`;
+            }
+
+            log.innerHTML = html;
+            if (wasAtBottom || messages.length < 5) {
+                log.scrollTop = log.scrollHeight;
+            }
+        }
+
+        async function sendMsg() {
+            const input = document.getElementById('msgInput');
+            const message = input.value.trim();
+            if (!message || !activeConvUserId) return;
+
+            const btn = document.getElementById('sendMsgBtn');
+            input.value = '';
+            btn.disabled = true;
+
+            try {
+                const res = await Auth.apiCall('send_message', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        sender_id: currentUser.id,
+                        receiver_id: activeConvUserId,
+                        message: message
+                    })
+                });
+
+                if (res.success) {
+                    await loadMessages(activeConvUserId, true);
+                    // Update conversation preview
+                    const conv = conversations.find(c => c.userId == activeConvUserId);
+                    if (conv) {
+                        conv.lastMessage = message;
+                        conv.lastTime = new Date().toISOString();
+                        renderConvList();
+                    }
+                } else {
+                    showToast('Message failed to send.', 'error');
+                    input.value = message;
+                }
+            } catch (e) {
+                showToast('Network error. Please try again.', 'error');
+                input.value = message;
+            } finally {
+                btn.disabled = false;
+                input.focus();
+            }
+        }
+
+        function showBlocked(reason) {
+            document.getElementById('convList').innerHTML = `
+                <div class="blocked-state">
+                    <div class="empty-icon" style="width: 60px; height: 60px; background: rgba(239,68,68,0.1); color: var(--error);">🔒</div>
+                    <h3 class="title-m">No conversations available</h3>
+                    <p class="body-s text-secondary">${reason}</p>
+                    <a href="${currentUser.role === 'doctor' ? 'doctor-dashboard.html' : 'patient-dashboard.html'}" class="btn btn-outline" style="margin-top: 1rem;">Back to Dashboard</a>
+                </div>
+            `;
+        }
+
+        function showConvSidebar() {
+            document.getElementById('convSidebar').classList.remove('hidden');
+        }
+
+        function formatTime(dateStr) {
+            const d = new Date(dateStr);
+            const now = new Date();
+            const diff = now - d;
+            if (diff < 86400000) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            if (diff < 604800000) return d.toLocaleDateString([], { weekday: 'short' });
+            return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+        }
+
+        function formatDate(dateStr) {
+            const d = new Date(dateStr);
+            const now = new Date();
+            const diff = Math.floor((now - d) / 86400000);
+            if (diff === 0) return 'Today';
+            if (diff === 1) return 'Yesterday';
+            return d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+        }
+
+        // Clean up polling on page leave
+        window.addEventListener('beforeunload', () => {
+            if (pollInterval) clearInterval(pollInterval);
+        });
+
+        // Run
+        init();
+    </script>
+</body>
+</html>

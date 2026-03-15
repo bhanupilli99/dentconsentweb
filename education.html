@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DentConsent | Education Journey</title>
+    <link rel="stylesheet" href="css/global.css">
+    <style>
+        .education-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 4rem;
+        }
+
+        .segmented-progress {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 2rem;
+            padding: 0 4rem;
+            max-width: 1400px;
+            margin: 2rem auto;
+        }
+
+        .progress-segment {
+            flex: 1;
+            height: 6px;
+            background: var(--border-subtle);
+            border-radius: var(--radius-full);
+            transition: all 0.6s var(--spring-ease);
+        }
+
+        .progress-segment.active {
+            background: var(--brand-primary);
+        }
+
+        .progress-segment.completed {
+            background: var(--success);
+        }
+
+        .edu-sidebar {
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+        }
+
+        .edu-nav-card {
+            padding: 1.5rem;
+        }
+
+        .edu-step-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem 1rem;
+            border-radius: var(--radius-m);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s var(--spring-ease);
+            font-weight: 500;
+        }
+
+        .edu-step-link.active {
+            background: var(--bg-secondary);
+            color: var(--brand-primary);
+            font-weight: 700;
+        }
+
+        .edu-step-link.completed {
+            color: var(--success);
+        }
+
+        .edu-step-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .edu-step-link.active .edu-step-number {
+            background: var(--brand-primary);
+            color: white;
+        }
+
+        .edu-step-link.completed .edu-step-number {
+            background: var(--success);
+            color: white;
+        }
+
+        .video-container {
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            background: black;
+            aspect-ratio: 16/9;
+            margin-bottom: 2.5rem;
+            box-shadow: var(--shadow-l3);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .quiz-option-card {
+            padding: 2rem;
+            border-radius: var(--radius-l);
+            border: 2px solid var(--border-subtle);
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s var(--spring-ease);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .quiz-option-card:hover {
+            border-color: var(--brand-primary-light);
+            background: var(--bg-secondary);
+        }
+
+        .quiz-option-card.selected {
+            border-color: var(--brand-primary);
+            background: var(--bg-secondary);
+            box-shadow: var(--shadow-l1);
+        }
+
+        .quiz-radio {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--border-regular);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .selected .quiz-radio {
+            border-color: var(--brand-primary);
+            background: var(--brand-primary);
+        }
+
+        .selected .quiz-radio::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white;
+        }
+
+        .roadmap-card {
+            padding: 2.5rem;
+            border-left: 4px solid var(--brand-primary);
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+
+        .roadmap-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--bg-secondary);
+            color: var(--brand-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+
+<body class="screen-enter">
+    <nav class="top-bar"
+        style="background: white; border-bottom: 1px solid var(--border-subtle); padding: 1.5rem 4rem; position: sticky; top: 0; z-index: 100;">
+        <div
+            style="display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; width: 100%;">
+            <a href="patient-dashboard.html" class="btn btn-ghost" style="gap: 0.75rem;">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Exit Orientation
+            </a>
+            <div style="text-align: center;">
+                <div class="label-m" id="journeyState">Step 1 of 8</div>
+                <div class="title-m" id="journeyTitle">Initial Introduction</div>
+            </div>
+            <div class="status-badge status-in-progress" id="timeRemaining">12 min remain</div>
+        </div>
+    </nav>
+
+    <div class="segmented-progress" id="topProgress">
+        <!-- JS populated -->
+    </div>
+
+    <div class="education-layout">
+        <aside class="edu-sidebar">
+            <div class="glass-card edu-nav-card">
+                <div class="label-m" style="margin-bottom: 1.5rem; padding-left: 1rem;">Course Curriculum</div>
+                <div id="stepNav">
+                    <!-- JS populated -->
+                </div>
+            </div>
+        </aside>
+
+        <main id="journeyMain" class="animate-in">
+            <!-- Content Injected via JS -->
+            <div class="glass-card" style="padding: 4rem; min-height: 500px; display: flex; flex-direction: column;">
+                <div id="stepContent" class="animate-in">
+                    <!-- Dynamic Step content -->
+                </div>
+
+                <div
+                    style="margin-top: auto; padding-top: 4rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle);">
+                    <button class="btn btn-outline" id="prevBtn" onclick="goBack()" style="visibility: hidden;">Previous
+                        Phase</button>
+                    <div class="label-m text-muted" id="stepIndicator">1 / 8 Completed</div>
+                    <button class="btn btn-primary" id="nextBtn" onclick="goNext()">Continue Journey</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/toast.js"></script>
+    <script>
+        const currentUser = Auth.requireAuth('patient');
+        const urlParams = new URLSearchParams(window.location.search);
+        const treatmentId = urlParams.get('treatment_id');
+        const opTypeId = urlParams.get('op_type_id');
+
+        const skipQuizParam = urlParams.get('skip_quiz') === 'true';
+        let currentStep = 1;
+        let stepDefinitions = [
+            { id: 1, title: 'Introduction', subtitle: 'Initial Orientation' },
+            { id: 2, title: 'Procedural Roadmap', subtitle: 'Step-by-Step Guide' },
+            { id: 3, title: 'Visual Orientation', subtitle: 'Clinical Video' },
+            { id: 4, title: 'Expected Outcomes', subtitle: 'Success Rates' },
+            { id: 5, title: 'Risks & Benefits', subtitle: 'Safety Details' },
+            { id: 6, title: 'Alternative Options', subtitle: 'Clinical Choices' },
+            { id: 7, title: 'Understanding Check', subtitle: 'Knowledge Quiz' },
+            { id: 8, title: 'Checklist', subtitle: 'Clinical Confirmation' },
+            { id: 9, title: 'Verification', subtitle: 'Final Approval' }
+        ];
+
+        // --- State Variables (must be declared before use) ---
+        let treatmentDetails = null;
+        let clinicalData = null;
+        let proceduralSteps = [];
+        let quizData = [];
+        let currentQuizIndex = 0;
+        let quizAnswers = [];
+        let checklistItems = [];
+        let checklistAnswers = [];
+
+        // Apply conditional quiz/checklist skip for signed treatments
+        if (skipQuizParam) {
+            // Filter out Quiz (id 7), Checklist (id 8), and Verification (id 9)
+            stepDefinitions = stepDefinitions.filter(s => s.title !== 'Understanding Check' && s.title !== 'Checklist' && s.title !== 'Verification');
+            // Re-index steps
+            stepDefinitions.forEach((s, idx) => s.id = idx + 1);
+        }
+        
+        const totalSteps = stepDefinitions.length;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!treatmentId || !opTypeId) {
+                window.location.href = 'patient-dashboard.html';
+                return;
+            }
+            initJourney();
+        });
+
+        async function initJourney() {
+            try {
+                const [tRes, eRes, sRes, qRes] = await Promise.all([
+                    Auth.apiCall(`get_treatments?user_id=${currentUser.id}&role=patient`),
+                    Auth.apiCall(`get_education_content?op_type_id=${opTypeId}`),
+                    Auth.apiCall(`get_procedure_steps?op_type_id=${opTypeId}`),
+                    Auth.apiCall(`get_quiz?op_type_id=${opTypeId}`)
+                ]);
+
+                if (tRes.success) {
+                    // Auth.apiCall wraps the response in { success, data: rawResponse } — so raw backend data is inside .data
+                    // Backend GET /get_treatments returns { success, treatments: [...] } → accessible as tRes.data.treatments
+                    const treatments = tRes.data?.treatments || tRes.data?.data || (Array.isArray(tRes.data) ? tRes.data : []);
+                    treatmentDetails = treatments.find(t => t.id == treatmentId);
+                    
+                    console.log('Journey Setup:', {
+                        treatmentId,
+                        treatmentStatus: treatmentDetails?.status,
+                        skipQuizParam,
+                        totalSteps
+                    });
+
+                    // Populate Checklist based on mobile app logic
+                    checklistItems = [];
+                    const statusLower = (treatmentDetails?.status || '').toLowerCase();
+                    
+                    if (treatmentDetails?.anesthesia_required) {
+                        checklistItems.push(
+                            { title: "Drug reactions and side effects", tag: "ANESTHESIA RISK" },
+                            { title: "Bruising and/or swelling", tag: "ANESTHESIA RISK" },
+                            { title: "Nerve Involvement", tag: "ANESTHESIA RISK" },
+                            { title: "Temporary Paralysis", tag: "ANESTHESIA RISK" },
+                            { title: "Numbness Duration", tag: "ANESTHESIA RISK" },
+                            { title: "Mandatory Anesthesia", tag: "ANESTHESIA RISK" }
+                        );
+                    }
+                    
+                    if (treatmentDetails?.specialization_id === 1) { // Implantology
+                        checklistItems.push(
+                            { title: "Treatment Time (3-8 months)", tag: "IMPLANTOLOGY" },
+                            { title: "Side Effects & Risks (bleeding, failure)", tag: "IMPLANTOLOGY" },
+                            { title: "Prosthesis Complications", tag: "IMPLANTOLOGY" },
+                            { title: "Restricted mouth opening", tag: "IMPLANTOLOGY" },
+                            { title: "Surgical Involvement (nerves, sinus)", tag: "IMPLANTOLOGY" },
+                            { title: "Additional Exposing Procedure", tag: "IMPLANTOLOGY" },
+                            { title: "Bone Grafting Awareness", tag: "IMPLANTOLOGY" }
+                        );
+                    } else if (treatmentDetails?.specialization_id === 2) { // Prosthodontics
+                        checklistItems.push(
+                            { title: "Root Canal potential", tag: "PROSTHODONTICS" },
+                            { title: "Failure or Breakage of tooth/bridge", tag: "PROSTHODONTICS" },
+                            { title: "Aesthetic & Speech Changes", tag: "PROSTHODONTICS" },
+                            { title: "Risks of treatment neglect", tag: "PROSTHODONTICS" }
+                        );
+                    } else {
+                        checklistItems.push(
+                            { title: "Procedure Understanding", tag: "GENERAL" },
+                            { title: "Risk Acknowledgement", tag: "GENERAL" },
+                            { title: "Alternative Options Explained", tag: "GENERAL" },
+                            { title: "Questions Answered", tag: "GENERAL" },
+                            { title: "Voluntary Consent", tag: "GENERAL" }
+                        );
+                    }
+                }
+                // Auth.apiCall wraps response: { success, data: rawBackendResponse }
+                // GET /get_education_content returns { success, benefits, risks, alternatives, ... } at top level
+                // → accessible as eRes.data.benefits, eRes.data.risks, eRes.data.alternatives etc.
+                if (eRes.success) clinicalData = eRes.data;
+                // GET /get_procedure_steps returns { success, steps: [...] } → eRes.data.steps
+                if (sRes.success) proceduralSteps = sRes.data?.steps || sRes.data?.data || (Array.isArray(sRes.data) ? sRes.data : []);
+                // GET /get_quiz returns { success, questions: [...] } → qRes.data.questions
+                if (qRes.success) quizData = qRes.data?.questions || qRes.data?.data || (Array.isArray(qRes.data) ? qRes.data : []);
+
+                renderProgress();
+                renderNav();
+                renderStep();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderProgress() {
+            const container = document.getElementById('topProgress');
+            container.innerHTML = stepDefinitions.map(s => `
+                <div class="progress-segment ${s.id === currentStep ? 'active' : (s.id < currentStep ? 'completed' : '')}"></div>
+            `).join('');
+        }
+
+        function renderNav() {
+            const container = document.getElementById('stepNav');
+            container.innerHTML = stepDefinitions.map(s => `
+                <div class="edu-step-link ${s.id === currentStep ? 'active' : (s.id < currentStep ? 'completed' : '')}" onclick="goToStep(${s.id})">
+                    <div class="edu-step-number">${s.id < currentStep ? '✓' : s.id}</div>
+                    <span>${s.title}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderStep() {
+            const container = document.getElementById('stepContent');
+            const step = stepDefinitions[currentStep - 1];
+
+            document.getElementById('journeyState').textContent = `Step ${currentStep} of ${totalSteps}`;
+            document.getElementById('journeyTitle').textContent = step.subtitle;
+            document.getElementById('stepIndicator').textContent = `${currentStep} / ${totalSteps} Orientation Phases`;
+            
+            // Previous button visibility logic
+            if (currentStep > 1) {
+                document.getElementById('prevBtn').style.visibility = 'visible';
+                document.getElementById('prevBtn').textContent = 'Previous Phase';
+            } else {
+                document.getElementById('prevBtn').style.visibility = 'hidden';
+            }
+
+            // Hide bottom buttons during quiz to focus on internal quiz nav
+            if (step.title === 'Understanding Check' && quizData && quizData.length > 0) {
+                document.getElementById('prevBtn').style.visibility = 'visible';
+                document.getElementById('nextBtn').style.display = 'none'; // Use display none rather than visibility hidden to collapse space
+            } else {
+                document.getElementById('nextBtn').style.display = 'block';
+                document.getElementById('nextBtn').style.visibility = 'visible';
+            }
+
+            if (step.title === 'Verification') {
+                document.getElementById('nextBtn').textContent = 'Confirm & Sign Consent';
+            } else if (step.title === 'Checklist') {
+                document.getElementById('nextBtn').textContent = 'Verify & Proceed';
+            } else {
+                document.getElementById('nextBtn').textContent = 'Continue Journey';
+            }
+
+            // Animate transition
+            container.classList.remove('animate-in');
+            void container.offsetWidth;
+            container.classList.add('animate-in');
+
+            switch (step.title) {
+                case 'Introduction': renderIntroduction(container); break;
+                case 'Procedural Roadmap': renderRoadmap(container); break;
+                case 'Visual Orientation': renderVideo(container); break;
+                case 'Expected Outcomes': renderOutcomes(container); break;
+                case 'Risks & Benefits': renderRisks(container); break;
+                case 'Alternative Options': renderAlternatives(container); break;
+                case 'Understanding Check': renderQuiz(container); break;
+                case 'Checklist': renderChecklist(container); break;
+                case 'Verification': renderVerification(container); break;
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function renderIntroduction(container) {
+            container.innerHTML = `
+                <span class="label-l" style="color: var(--brand-primary); margin-bottom: 1rem; display: block;">Welcome to Your Orientation</span>
+                <h1 class="display-l" style="margin-bottom: 2rem;">Clinical Introduction</h1>
+                <p class="body-l text-secondary" style="margin-bottom: 3rem; max-width: 800px;">We have prepared a personalized clinical pathway for your upcoming <strong>${treatmentDetails?.category || 'Procedure'}</strong>. Please review each phase carefully to ensure a safe and informed experience.</p>
+                
+                <div class="glass-card" style="background: var(--bg-secondary); border: none; padding: 3rem; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+                    <div>
+                        <div class="label-m">Attending Specialist</div>
+                        <div class="title-m">Dr. ${treatmentDetails?.doctor_name || 'Clinic Team'}</div>
+                    </div>
+                    <div>
+                        <div class="label-m">Patient Identity</div>
+                        <div class="title-m">${currentUser.full_name || currentUser.name || 'Patient'}</div>
+                    </div>
+                    <div>
+                        <div class="label-m">Initiation Date</div>
+                        <div class="title-m">${new Date(treatmentDetails?.created_at).toLocaleDateString()}</div>
+                    </div>
+                    <div>
+                        <div class="label-m">Case Sensitivity</div>
+                        <div class="title-m">${treatmentDetails?.anesthesia_required ? 'General Anesthesia' : 'Local Anesthesia'}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRoadmap(container) {
+            container.innerHTML = `
+                <h1 class="display-m" style="margin-bottom: 3rem;">Procedural Roadmap</h1>
+                ${proceduralSteps.map(s => `
+                    <div class="glass-card roadmap-card animate-in">
+                        <div class="roadmap-icon">${s.step_number}</div>
+                        <div>
+                            <h4 class="title-l" style="margin-bottom: 0.5rem;">${s.title}</h4>
+                            <p class="body-m text-secondary">${s.description || 'Clinical milestone.'}</p>
+                            ${s.duration_note ? `<div class="status-badge status-in-progress" style="margin-top: 1rem;">Est: ${s.duration_note}</div>` : ''}
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function renderVideo(container) {
+            container.innerHTML = `
+                <h1 class="display-m" style="margin-bottom: 1rem;">Clinical Orientation Video</h1>
+                <p class="body-l text-secondary" style="margin-bottom: 2.5rem;">Please observe the following orientation module carefully. It contains critical safety steps and procedure details.</p>
+                <div class="video-container">
+                    <video id="orientationVideo" src="${Auth.getFullUrl(clinicalData?.video_url)}" controls style="width:100%; height:100%;"></video>
+                </div>
+                <div class="glass-card" style="padding: 2rem; background: var(--bg-secondary); border: none;">
+                    <h4 class="title-m" style="margin-bottom: 1rem;">Key Discussion Points</h4>
+                    <ul class="body-m text-secondary" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        ${clinicalData?.key_topics?.map(t => `<li>• ${t.topic}</li>`).join('') || '<li>• Procedure Safety</li><li>• Recovery Protocol</li>'}
+                    </ul>
+                </div>
+            `;
+        }
+
+        function renderOutcomes(container) {
+            container.innerHTML = `
+                <h1 class="display-m" style="margin-bottom: 3rem;">Clinical Success & Outcomes</h1>
+                <div style="text-align: center; padding: 4rem 0;">
+                    <div class="display-xl" style="font-size: 6rem; color: var(--brand-primary);">${clinicalData?.success_rate || '95'}%</div>
+                    <div class="label-l" style="margin-bottom: 2rem;">Average Clinical Success Rate</div>
+                    <p class="body-l text-secondary mx-auto" style="max-width: 500px;">DentConsent specialists maintain high-tier clinical standards. For your procedure, we anticipate a seamless outcome with adherence to post-op care.</p>
+                </div>
+            `;
+        }
+
+        function renderRisks(container) {
+            container.innerHTML = `
+                <h1 class="display-m" style="margin-bottom: 2rem;">Clinical Balance: Risks & Benefits</h1>
+                <p class="body-l text-secondary" style="margin-bottom: 3.5rem; max-width: 800px;">A transparent review of expected clinical advantages and possible procedural considerations is essential for informed consent.</p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem;">
+                            <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(39, 174, 96, 0.1); color: var(--success); display: flex; align-items: center; justify-content: center;">
+                                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            </div>
+                            <h4 class="title-l" style="color: var(--success);">Anticipated Benefits</h4>
+                        </div>
+                        ${clinicalData?.benefits?.map(b => `
+                            <div class="glass-card hover-lift" style="margin-bottom: 1.5rem; padding: 2rem; border-left: 4px solid var(--success); background: linear-gradient(90deg, rgba(39, 174, 96, 0.05) 0%, transparent 100%);">
+                                <div class="title-m" style="margin-bottom: 0.5rem;">${b.title}</div>
+                                <p class="body-m text-secondary">${b.description}</p>
+                            </div>
+                        `).join('') || '<p class="body-l text-muted">No specific benefits recorded.</p>'}
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem;">
+                            <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(231, 76, 60, 0.1); color: var(--error); display: flex; align-items: center; justify-content: center;">
+                                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                            </div>
+                            <h4 class="title-l" style="color: var(--error);">Procedural Risks</h4>
+                        </div>
+                        ${clinicalData?.risks?.map(r => `
+                            <div class="glass-card hover-lift" style="margin-bottom: 1.5rem; padding: 2rem; border-left: 4px solid var(--error); background: linear-gradient(90deg, rgba(231, 76, 60, 0.05) 0%, transparent 100%);">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                                    <div class="title-m">${r.title}</div>
+                                    <span class="label-m" style="background: rgba(231, 76, 60, 0.1); color: var(--error); padding: 4px 8px; border-radius: 6px;">${r.risk_percentage}% Incidence</span>
+                                </div>
+                                <p class="body-m text-secondary">${r.description}</p>
+                            </div>
+                        `).join('') || '<p class="body-l text-muted">No specific risks recorded.</p>'}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAlternatives(container) {
+            container.innerHTML = `
+                <h1 class="display-m" style="margin-bottom: 2rem;">Alternative Clinical Pathways</h1>
+                <p class="body-l text-secondary" style="margin-bottom: 3.5rem; max-width: 800px;">Review the potential alternatives that were considered during your clinical evaluation.</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 3rem;">
+                    ${clinicalData?.alternatives?.map(a => `
+                        <div class="glass-card hover-lift" style="padding: 3rem; border-top: 4px solid var(--brand-primary);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
+                                <h4 class="title-l">${a.name}</h4>
+                                <div class="status-badge status-pending">Viable Option</div>
+                            </div>
+                            
+                            ${a.description ? `<p class="body-m text-secondary" style="margin-bottom: 2.5rem; line-height: 1.6;">${a.description}</p>` : ''}
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border-subtle);">
+                                <div>
+                                    <div class="label-l" style="color: var(--success); margin-bottom: 0.75rem;">Advantages</div>
+                                    <div class="body-m text-secondary" style="font-weight: 500;">${a.pros}</div>
+                                </div>
+                                <div>
+                                    <div class="label-l" style="color: var(--brand-secondary); margin-bottom: 0.75rem;">Considerations</div>
+                                    <div class="body-m text-secondary" style="font-weight: 500;">${a.cons}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('') || `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 5rem;" class="glass-card">
+                            <p class="body-l text-muted">No clinical alternatives are uniquely indicated for this specific anatomical profile.</p>
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        let isQuizResultState = false;
+
+        function renderQuiz(container) {
+            if (!quizData || quizData.length === 0) {
+                container.innerHTML = `<div style="text-align: center; padding: 5rem;">
+                    <h1 class="display-m">Knowledge Verification</h1>
+                    <p class="body-l text-muted">No interactive verification required. Proceed to final confirmation.</p>
+                </div>`;
+                // If no quiz data, make sure the Next button is visible
+                document.getElementById('nextBtn').style.display = 'block';
+                document.getElementById('nextBtn').style.visibility = 'visible';
+                return;
+            }
+
+            if (isQuizResultState) {
+                renderQuizResult(container);
+                return;
+            }
+
+            const q = quizData[currentQuizIndex];
+            const savedAns = quizAnswers[currentQuizIndex];
+
+            container.innerHTML = `
+                <div class="label-l" style="margin-bottom: 1rem; color: var(--brand-primary);">Knowledge Check ${currentQuizIndex + 1} / ${quizData.length}</div>
+                <h1 class="display-m" style="margin-bottom: 3rem;">${q.question}</h1>
+                <div style="margin-bottom: 3rem;">
+                    ${q.options.map((opt, i) => `
+                        <div class="quiz-option-card ${savedAns === i ? 'selected' : ''}" onclick="selectAns(${i})">
+                            <div class="quiz-radio ${savedAns === i ? 'checked' : ''}">
+                                ${savedAns === i ? '✓' : ''}
+                            </div>
+                            <div class="body-l" style="font-weight: 600;">${opt}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div style="display: flex; gap: 1.5rem; justify-content: flex-start; align-items: center; padding-top: 2rem; border-top: 1px solid var(--border-subtle);">
+                    <button class="btn btn-outline" onclick="quizPrev()" ${currentQuizIndex === 0 ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
+                        ← Previous Question
+                    </button>
+                    <button class="btn btn-primary" onclick="quizNext()">
+                        ${currentQuizIndex === quizData.length - 1 ? 'Finish Quiz' : 'Next Question →'}
+                    </button>
+                </div>
+            `;
+        }
+
+        let lastQuizScore = 0;
+
+        function renderQuizResult(container) {
+            const optionMap = { 'A': 0, 'a': 0, 'B': 1, 'b': 1, 'C': 2, 'c': 2, 'D': 3, 'd': 3 };
+            let correctCount = 0;
+            quizData.forEach((q, i) => {
+                let correctIdx = q.correct_option_index;
+                // If correct_option_index is missing, try mapping q.correct (A, B, C, D)
+                if ((correctIdx === undefined || correctIdx === null) && q.correct !== undefined) {
+                    correctIdx = optionMap[q.correct];
+                }
+                
+                if (quizAnswers[i] == correctIdx) {
+                    correctCount++;
+                }
+            });
+            const wrongCount = quizData.length - correctCount;
+            const isPerfect = wrongCount === 0;
+            lastQuizScore = correctCount;
+
+            container.innerHTML = `
+                <div style="text-align: center; padding: 3rem 0;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: ${isPerfect ? 'rgba(48, 181, 90, 0.1)' : 'rgba(255, 69, 58, 0.1)'}; color: ${isPerfect ? 'var(--success)' : 'var(--error)'}; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; font-size: 2.5rem;">
+                        ${isPerfect ? '✓' : '✕'}
+                    </div>
+                    <h1 class="display-m" style="margin-bottom: 1rem;">Quiz Results</h1>
+                    <p class="body-l text-secondary" style="margin-bottom: 3rem;">
+                        ${isPerfect ? 'Perfect! You have a clear understanding of the procedure.' : 'You missed some important details. Please review and try again.'}
+                    </p>
+                    
+                    <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 4rem;">
+                        <div class="glass-card" style="padding: 1.5rem 2.5rem; text-align: center; border-bottom: 3px solid var(--success);">
+                            <div class="display-l" style="color: var(--success);">${correctCount}</div>
+                            <div class="label-m">Correct</div>
+                        </div>
+                        <div class="glass-card" style="padding: 1.5rem 2.5rem; text-align: center; border-bottom: 3px solid var(--error);">
+                            <div class="display-l" style="color: var(--error);">${wrongCount}</div>
+                            <div class="label-m">Wrong</div>
+                        </div>
+                    </div>
+
+                    ${isPerfect ? `
+                        <button class="btn btn-primary" onclick="proceedFromQuiz()">Proceed to Checklist</button>
+                    ` : `
+                        <button class="btn btn-outline" onclick="retakeQuiz()">Retake Quiz</button>
+                    `}
+                </div>
+            `;
+        }
+
+        function retakeQuiz() {
+            currentQuizIndex = 0;
+            quizAnswers = [];
+            isQuizResultState = false;
+            renderStep();
+        }
+
+        async function proceedFromQuiz() {
+            await submitQuiz();
+        }
+
+        function quizNext() {
+            if (quizAnswers[currentQuizIndex] === undefined || quizAnswers[currentQuizIndex] === null) {
+                showToast('Please select an option to verify your understanding.', 'warning');
+                return;
+            }
+            if (currentQuizIndex < quizData.length - 1) {
+                currentQuizIndex++;
+                renderStep();
+            } else {
+                isQuizResultState = true;
+                renderStep();
+            }
+        }
+
+        function quizPrev() {
+            if (currentQuizIndex > 0) {
+                currentQuizIndex--;
+                renderStep();
+            }
+        }
+
+        function selectAns(idx) {
+            quizAnswers[currentQuizIndex] = idx;
+            // Targeted update to avoid flicker
+            const options = document.querySelectorAll('.quiz-option-card');
+            options.forEach((opt, i) => {
+                const isSelected = i === idx;
+                opt.classList.toggle('selected', isSelected);
+                const radio = opt.querySelector('.quiz-radio');
+                if (radio) {
+                    radio.classList.toggle('checked', isSelected);
+                    radio.innerHTML = isSelected ? '✓' : '';
+                }
+            });
+        }
+
+        function renderChecklist(container) {
+            container.innerHTML = `
+                <div class="label-l" style="color: var(--brand-primary); margin-bottom: 1rem;">Clinical Confirmation</div>
+                <h1 class="display-m" style="margin-bottom: 2rem;">Safety Checklist</h1>
+                <p class="body-l text-secondary" style="margin-bottom: 3rem;">Please review and confirm that you understand each of the following points regarding your treatment.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    ${checklistItems.map((item, i) => `
+                        <div class="glass-card checklist-item-card ${checklistAnswers[i] ? 'selected' : ''}" 
+                             style="padding: 1.5rem 2rem; display: flex; align-items: center; gap: 1.5rem; cursor: pointer; transition: all 0.2s;"
+                             onclick="toggleChecklist(${i})">
+                            <div class="quiz-radio ${checklistAnswers[i] ? 'checked' : ''}" style="flex-shrink: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid var(--border-subtle); border-radius: 6px; color: var(--brand-primary);">
+                                ${checklistAnswers[i] ? '✓' : ''}
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="label-s" style="color: var(--brand-secondary); margin-bottom: 0.25rem;">${item.tag}</div>
+                                <div class="body-m" style="font-weight: 600;">${item.title}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            // Check if all items are checked to enable next button
+            const allChecked = checklistItems.every((_, i) => checklistAnswers[i]);
+            const nextBtn = document.getElementById('nextBtn');
+            if (nextBtn) {
+                nextBtn.disabled = !allChecked;
+                nextBtn.style.opacity = allChecked ? '1' : '0.5';
+                nextBtn.style.cursor = allChecked ? 'pointer' : 'not-allowed';
+            }
+        }
+
+        function toggleChecklist(index) {
+            checklistAnswers[index] = !checklistAnswers[index];
+            
+            // Targeted update to avoid flicker
+            const cards = document.querySelectorAll('.checklist-item-card');
+            const card = cards[index];
+            if (card) {
+                card.classList.toggle('selected', checklistAnswers[index]);
+                const radio = card.querySelector('.quiz-radio');
+                if (radio) {
+                    radio.classList.toggle('checked', checklistAnswers[index]);
+                    radio.innerHTML = checklistAnswers[index] ? '✓' : '';
+                }
+            }
+
+            // Check if all items are checked to enable next button
+            const allChecked = checklistItems.every((_, i) => checklistAnswers[i]);
+            const nextBtn = document.getElementById('nextBtn');
+            if (nextBtn) {
+                nextBtn.disabled = !allChecked;
+                nextBtn.style.opacity = allChecked ? '1' : '0.5';
+                nextBtn.style.cursor = allChecked ? 'pointer' : 'not-allowed';
+            }
+        }
+
+        async function submitChecklist() {
+            const btn = document.getElementById('nextBtn');
+            btn.disabled = true;
+            btn.textContent = 'Recording confirmation...';
+            
+            const payload = {
+                treatment_id: parseInt(treatmentId),
+                checklist_data: checklistItems.map((item, i) => ({
+                    item_text: item.title,
+                    is_agreed: !!checklistAnswers[i]
+                }))
+            };
+
+            try {
+                const res = await Auth.apiCall('submit_consent_checklist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (res.success) {
+                    // Dynamically find the Verification step instead of hardcoding step 9
+                    const verificationIdx = stepDefinitions.findIndex(s => s.title === 'Verification') + 1;
+                    currentStep = verificationIdx || currentStep + 1;
+                    renderProgress();
+                    renderNav();
+                    renderStep();
+                } else {
+                    showToast('Submission failed: ' + res.error, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Connection error while saving checklist.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Verify & Proceed';
+            }
+        }
+
+        function renderVerification(container) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 4rem 0;">
+                    <div style="width: 100px; height: 100px; border-radius: 50%; background: var(--bg-secondary); color: var(--success); display: flex; align-items: center; justify-content: center; margin: 0 auto 3rem; font-size: 3rem;">✓</div>
+                    <h1 class="display-l" style="margin-bottom: 1.5rem;">Orientation Complete</h1>
+                    <p class="body-l text-secondary mx-auto" style="max-width: 500px; margin-bottom: 4rem;">You have successfully navigated the clinical orientation. Your digital record has been updated to reflect orientation completion.</p>
+                    <div class="glass-card" style="display: inline-flex; align-items: center; gap: 1rem; padding: 1.5rem 3rem; background: var(--bg-secondary); border: none;">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                        <span class="body-m font-bold">Authorized for Digital Signature</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function goNext() {
+            const step = stepDefinitions[currentStep - 1];
+            
+            // Handle Quiz Step Logic (Original ID 7)
+            if (step.title === 'Understanding Check') {
+                if (quizData && quizData.length > 0) {
+                    if (isQuizResultState) {
+                        proceedFromQuiz();
+                        return;
+                    }
+                    quizNext();
+                    return;
+                }
+                // If no quiz data, fall through to Standard Navigation
+            } 
+            
+            // Handle Checklist Step Logic (Original ID 8)
+            if (step.title === 'Checklist') {
+                submitChecklist();
+                return;
+            } 
+            
+            // Standard Navigation
+            if (currentStep < totalSteps) {
+                currentStep++;
+                renderProgress();
+                renderNav();
+                renderStep();
+            } else {
+                // If skipQuizParam is active, we return to dashboard. Otherwise to consent.
+                if (skipQuizParam) {
+                    window.location.href = 'patient-dashboard.html';
+                } else {
+                    window.location.href = `consent.html?treatment_id=${treatmentId}`;
+                }
+            }
+        }
+
+        function goBack() {
+            const step = stepDefinitions[currentStep - 1];
+
+            if (step.title === 'Understanding Check') {
+                if (isQuizResultState) {
+                    isQuizResultState = false;
+                    currentQuizIndex = quizData.length - 1;
+                    renderStep();
+                } else if (currentQuizIndex > 0) {
+                    currentQuizIndex--;
+                    renderStep();
+                } else {
+                    currentStep--;
+                    renderProgress();
+                    renderNav();
+                    renderStep();
+                }
+            } else if (currentStep > 1) {
+                currentStep--;
+                const prevStep = stepDefinitions[currentStep - 1];
+                if (prevStep.title === 'Understanding Check') {
+                    currentQuizIndex = quizData.length - 1; // Back to last quiz question
+                    isQuizResultState = false;
+                }
+                renderProgress();
+                renderNav();
+                renderStep();
+            }
+        }
+
+        function goToStep(s) {
+            if (s < currentStep) {
+                currentStep = s;
+                isQuizResultState = false;
+                const step = stepDefinitions[currentStep - 1];
+                if (step.title === 'Understanding Check') currentQuizIndex = 0;
+                renderProgress();
+                renderNav();
+                renderStep();
+            }
+        }
+
+        async function submitQuiz() {
+            try {
+                const btn = document.getElementById('nextBtn');
+                btn.disabled = true;
+                btn.textContent = 'Verifying understanding...';
+
+                await Auth.apiCall('submit_consent_quiz', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        treatment_id: parseInt(treatmentId),
+                        quiz_score: lastQuizScore,
+                        total_questions: quizData.length
+                    })
+                });
+
+                // Find the index of the Checklist step
+                const checklistStepIndex = stepDefinitions.findIndex(s => s.title === 'Checklist') + 1;
+                currentStep = checklistStepIndex || currentStep + 1;
+                
+                isQuizResultState = false;
+                renderProgress();
+                renderNav();
+                renderStep();
+                btn.disabled = false;
+            } catch (err) {
+                console.error(err);
+                showToast('Verification record failed. Please try again.', 'error');
+            }
+        }
+    </script>
+</body>
+
+</html>

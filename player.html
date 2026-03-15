@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DentConsent | Clinical Player</title>
+    <link rel="stylesheet" href="css/global.css">
+    <style>
+        body {
+            background: #0f172a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .player-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .video-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: black;
+            position: relative;
+        }
+
+        video {
+            max-width: 100%;
+            max-height: 100%;
+            width: 100%;
+            height: auto;
+            outline: none;
+        }
+
+        .player-footer {
+            padding: 2rem;
+            background: #1e293b;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="player-header">
+        <div class="back-btn" onclick="history.back()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                    d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+            </svg>
+        </div>
+        <div>
+            <div class="text-xs font-bold text-primary uppercase tracking-widest">Knowledge Vault</div>
+            <div class="font-extrabold" id="videoTitle">Clinical Procedure</div>
+        </div>
+    </div>
+
+    <div class="video-container">
+        <video id="mainVideo" controls autoplay playsinline>
+            <source src="" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <div class="player-footer">
+        <h3 class="font-extrabold mb-2" id="footerTitle">Procedure Overview</h3>
+        <p class="text-sm text-secondary" id="footerDesc">This clinical orientation provides key insights into your
+            upcoming dental procedure, ensuring you're fully informed and comfortable with the care plan.</p>
+
+        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+            <button class="btn btn-primary" style="flex: 1; border-radius: 12px;" onclick="history.back()">Mark as
+                Reviewed</button>
+            <button class="btn btn-outline" style="border-radius: 12px; color: white;"
+                onclick="document.getElementById('mainVideo').currentTime = 0">Restart</button>
+        </div>
+    </div>
+
+    <script src="js/toast.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const videoUrl = urlParams.get('video_url');
+
+        if (videoUrl) {
+            const videoElement = document.getElementById('mainVideo');
+            videoElement.querySelector('source').src = videoUrl;
+            videoElement.load();
+
+            // Try to extract a title from the URL if possible or just use a placeholder
+            // For a production app, we would pass the title via params too.
+            const title = urlParams.get('title') || 'Procedure Orientation';
+            document.getElementById('videoTitle').textContent = title;
+            document.getElementById('footerTitle').textContent = title;
+        } else {
+            showToast('Video source logic failed. Returning to vault.', 'error');
+            history.back();
+        }
+    </script>
+</body>
+
+</html>

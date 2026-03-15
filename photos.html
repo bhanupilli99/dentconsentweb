@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DentConsent | Clinical Imaging Log</title>
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="css/global.css">
+
+    <style>
+        .navbar {
+            padding: 1.25rem 0;
+            background: rgba(248, 250, 252, 0.8);
+            backdrop-filter: blur(8px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .back-btn:hover {
+            color: var(--primary-main);
+        }
+
+        .photo-portal {
+            max-width: 1000px;
+            margin: 2rem auto 4rem;
+        }
+
+        .upload-zone {
+            padding: 4rem 2rem;
+            text-align: center;
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            margin-bottom: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary-main);
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            background: white;
+            color: var(--primary-main);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 0.5rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .photo-card {
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .photo-img-wrapper {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+        }
+
+        .photo-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .photo-card:hover .photo-img-wrapper img {
+            transform: scale(1.1);
+        }
+
+        .photo-overlay {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            right: 1rem;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+
+        .photo-info {
+            padding: 1.25rem 1.5rem;
+        }
+
+        .badge-pre {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .badge-post {
+            background: #f0fdf4;
+            color: #166534;
+        }
+
+        .badge-intra {
+            background: #eff6ff;
+            color: #1e40af;
+        }
+
+        /* Classification Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            width: 100%;
+            max-width: 440px;
+            padding: 2.5rem;
+        }
+
+        #previewImg {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-md);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="mesh-bg"></div>
+
+    <nav class="navbar">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="doctor-dashboard.html" class="back-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+                </svg>
+                Dashboard
+            </a>
+            <span class="font-bold text-sm text-primary">Clinical Photo Documentation</span>
+        </div>
+    </nav>
+
+    <main class="container photo-portal">
+        <div style="margin-bottom: 3rem;">
+            <h1 id="patientName" style="margin-bottom: 0.5rem;">Treatment Gallery</h1>
+            <p class="text-secondary" id="treatmentMeta">Consulting Clinical Records...</p>
+        </div>
+
+        <input type="file" id="fileInput" accept="image/*" style="display: none;"
+            onchange="handleFileSelected(this.files)">
+
+        <div class="glass-card upload-zone animate-in" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z" />
+                    <path
+                        d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5 2a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z" />
+                </svg>
+            </div>
+            <h3 style="margin: 0;">Publish New Clinical Image</h3>
+            <p class="text-sm text-muted">Select or drag photographs to archive against this treatment record.</p>
+        </div>
+
+        <div class="gallery-grid" id="galleryGrid">
+            <!-- Rendered by JS -->
+        </div>
+    </main>
+
+    <!-- Classification Modal -->
+    <div class="modal-overlay" id="classifyModal">
+        <div class="glass-card modal-card animate-in">
+            <h3 class="mb-4">Image Classification</h3>
+            <img id="previewImg" src="">
+
+            <div class="form-group">
+                <label class="form-label">Clinical Stage</label>
+                <select id="stageSelect" class="form-control">
+                    <option value="pre">Pre-Operative (Initial State)</option>
+                    <option value="intra">Intra-Operative (In Progress)</option>
+                    <option value="post">Post-Operative (Final Result)</option>
+                </select>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+                <button class="btn btn-ghost" onclick="closeModal()">Discard</button>
+                <button class="btn btn-primary" id="uploadBtn" onclick="performUpload()">Archive Photo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Logic -->
+    <script src="js/auth.js"></script>
+    <script src="js/toast.js"></script>
+    <script>
+        const currentUser = Auth.requireAuth('doctor');
+        const urlParams = new URLSearchParams(window.location.search);
+        const treatmentId = urlParams.get('treatment_id');
+
+        if (!treatmentId) {
+            window.location.href = 'doctor-dashboard.html';
+        }
+
+        let selectedFile = null;
+
+        async function initPage() {
+            // Load Treatment Detail
+            const res = await Auth.apiCall(`get_treatments.php?treatment_id=${treatmentId}`);
+            if (res.success && res.data.treatment) {
+                const t = res.data.treatment;
+                document.getElementById('patientName').textContent = `${t.patient_name || 'Patient'} — ${t.category || 'Treatment'}`;
+                document.getElementById('treatmentMeta').textContent = `Record ID: #${treatmentId} | Care provider: Dr. ${currentUser.full_name}`;
+
+                loadGallery(t.photos || []);
+            }
+        }
+
+        initPage();
+
+        function loadGallery(photos) {
+            const grid = document.getElementById('galleryGrid');
+            if (photos.length === 0) {
+                grid.innerHTML = '<div class="text-muted" style="grid-column: 1/-1; text-align: center; padding: 4rem;">No clinical images archived for this treatment session.</div>';
+                return;
+            }
+
+            grid.innerHTML = photos.map((p, idx) => `
+                <div class="glass-card photo-card animate-in" style="animation-delay: ${idx * 0.1}s">
+                    <div class="photo-img-wrapper">
+                        <img src="http://${window.location.hostname}:8000/${p.photo_url}" alt="Clinical Detail">
+                        <div class="photo-overlay">
+                            <span class="badge badge-${p.stage}">${p.stage.toUpperCase()}</span>
+                            <button class="btn btn-ghost" style="padding: 0.4rem; background: rgba(255,255,255,0.8); border-radius: 8px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M11 1.5v1h2.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H4v-1a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="photo-info">
+                        <div class="text-xs text-muted font-bold">${new Date(p.created_at || Date.now()).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function handleFileSelected(files) {
+            if (files && files[0]) {
+                selectedFile = files[0];
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('classifyModal').classList.add('active');
+                };
+                reader.readAsDataURL(selectedFile);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('classifyModal').classList.remove('active');
+            selectedFile = null;
+            document.getElementById('fileInput').value = '';
+        }
+
+        async function performUpload() {
+            const btn = document.getElementById('uploadBtn');
+            const stage = document.getElementById('stageSelect').value;
+
+            btn.disabled = true;
+            btn.textContent = "Uploading Clinical Data...";
+
+            const formData = new FormData();
+            formData.append('treatment_id', treatmentId);
+            formData.append('stage', stage);
+            formData.append('photo', selectedFile);
+
+            const res = await Auth.apiCall('upload_treatment_photo.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            btn.disabled = false;
+            btn.textContent = "Archive Photo";
+
+            if (res.success) {
+                closeModal();
+                initPage(); // Refresh gallery
+            } else {
+                showToast('Archive failed: ' + res.error, 'error');
+            }
+        }
+    </script>
+</body>
+
+</html>
